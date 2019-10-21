@@ -152,7 +152,7 @@ require_once BASE_PATH.'/includes/auth_validate.php';
 
                                 <ul class="dropdown-menu">
                                     <li class="active">
-										<a href="<?php echo BASE_URL;?>/members/activity-me.html"><span>My Album</span></a></li>
+										<a href="<?php echo BASE_URL;?>/members/activity-me.php"><span>My Album</span></a></li>
                                     <li><a href="<?php echo BASE_URL;?>/members/activity-fam.html"><span>My Family</span></a></li>
                                     <li><a href="<?php echo BASE_URL;?>/members/activity-frd.html"><span>My Friends</span></a></li>
                                   
@@ -169,9 +169,9 @@ require_once BASE_PATH.'/includes/auth_validate.php';
                                 </a>
 							   
 								<ul class="dropdown-menu"><li>
-									<a href="members.html"><span>Members</span></a></li>-->
+									<a href="members.php"><span>Members</span></a></li>-->
                                 
-                            <li><a href="<?php echo BASE_URL;?>/members/members.html"/><span>Members</span></a></li>
+                            <li><a href="<?php echo BASE_URL;?>/members/members.php"/><span>Members</span></a></li>
 								
                                <!-- </ul>-->
                             </li>
@@ -190,7 +190,7 @@ require_once BASE_PATH.'/includes/auth_validate.php';
 									<li><a href="<?php echo BASE_URL;?>/members/groups-events.html"><span>Events</span></a></li>
 									<li><a href="<?php echo BASE_URL;?>/members/groups-homerepair.html"><span>Home Repairs</span></a></li>
 									<li><a href="<?php echo BASE_URL;?>/members/groups-pets.html"><span>Pets</span></a></li>
-									<li><a href="<?php echo BASE_URL;?>/members/groups-recipes.html"><span>Recipes</span></a></li>
+									<li><a href="<?php echo BASE_URL;?>/members/groups-recipes.php"><span>Recipes</span></a></li>
 									<li><a href="<?php echo BASE_URL;?>/members/groups-sports.html"><span>Sports</span></a></li>
 									<li><a href="<?php echo BASE_URL;?>/members/groups-travel.html"><span>Travel</span></a></li>
 								
@@ -225,7 +225,7 @@ require_once BASE_PATH.'/includes/auth_validate.php';
                     <div class="col-md-4 col-xs-6 col-xxs-12 pb--60">
                         <!-- Image Block Start -->
                         <div class="img--block style--2">
-                            <a href="activity-me.html" class="btn-link text-darkest text-center" target="">
+                            <a href="activity-me.php" class="btn-link text-darkest text-center" target="">
                                 <span><h2>My Album</h2></span>
                                 <img src="grandma480x480.png" alt="">
 
@@ -463,7 +463,7 @@ require_once BASE_PATH.'/includes/auth_validate.php';
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="<?php echo BASE_URL;?>/members/groups-recipes.html">
+                                            <a href="<?php echo BASE_URL;?>/members/groups-recipes.php">
                                                 <i class="fa fa-folder-o"></i>
                                                 <span class="text">Recipes</span>
                                                 
@@ -539,55 +539,55 @@ require_once BASE_PATH.'/includes/auth_validate.php';
                         <div class="recent-active-members--widget style--2">
                             <div class="owl-carousel" data-owl-items="12" data-owl-nav="true" data-owl-speed="1200" data-owl-responsive='{"0": {"items": "3"}, "481": {"items": "6"}, "768": {"items": "8"}, "992": {"items": "12"}}'>
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
                                 </div>
                             </div>
                         </div>

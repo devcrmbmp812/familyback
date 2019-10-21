@@ -147,7 +147,7 @@
 
                             <ul class="dropdown-menu">
                                 <li class="active">
-                                    <a href="<?php echo BASE_URL;?>/members/activity-me.html"><span>My Album</span></a></li>
+                                    <a href="<?php echo BASE_URL;?>/members/activity-me.php"><span>My Album</span></a></li>
                                 <li><a href="<?php echo BASE_URL;?>/members/activity-fam.html"><span>My Family</span></a></li>
                                 <li><a href="<?php echo BASE_URL;?>/members/activity-frd.html"><span>My Friends</span></a></li>
 
@@ -166,7 +166,7 @@
                               <ul class="dropdown-menu"><li>
                                   <a href="members.html"><span>Members</span></a></li>-->
 
-                        <li><a href="<?php echo BASE_URL;?>/members/members.html"/><span>Members</span></a></li>
+                        <li><a href="<?php echo BASE_URL;?>/members/members.php"/><span>Members</span></a></li>
 
                         <!-- </ul>-->
                         </li>
@@ -185,7 +185,7 @@
                                 <li><a href="<?php echo BASE_URL;?>/members/groups-events.html"><span>Events</span></a></li>
                                 <li><a href="<?php echo BASE_URL;?>/members/groups-homerepair.html"><span>Home Repairs</span></a></li>
                                 <li><a href="<?php echo BASE_URL;?>/members/groups-pets.html"><span>Pets</span></a></li>
-                                <li><a href="<?php echo BASE_URL;?>/members/groups-recipes.html"><span>Recipes</span></a></li>
+                                <li><a href="<?php echo BASE_URL;?>/members/groups-recipes.php"><span>Recipes</span></a></li>
                                 <li><a href="<?php echo BASE_URL;?>/members/groups-sports.html"><span>Sports</span></a></li>
                                 <li><a href="<?php echo BASE_URL;?>/members/groups-travel.html"><span>Travel</span></a></li>
 

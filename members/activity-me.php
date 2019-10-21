@@ -1,3 +1,34 @@
+<?php
+session_start();
+require_once '../config/config.php';
+require_once BASE_PATH.'/includes/auth_validate.php';
+
+if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
+    $db = getDbInstance();
+    $view_date = $_POST['view_date'];
+
+    $view_cat = $_POST['view_category'];
+    $db->join('tbl_users', 'tbl_notes.user_id = tbl_users.id')->join('tbl_categories','tbl_notes.cat_id = tbl_categories.id');
+    $db->where('cat_id', $view_cat);
+    if($view_date == 'today') {
+        $view_date = date('Y-m-d');
+        $db->where('note_date', $view_date);
+    } else {
+        $view_date = date('Y-m-d');
+        $db->where('note_date', $view_date, '!=');
+    }
+
+    $db->where('user_id', $_SESSION['user_id']);
+
+    $rows = $db->get('tbl_notes');
+
+} else {
+    $db = getDbInstance();
+    $db->join('tbl_users', 'tbl_notes.user_id = tbl_users.id')->join('tbl_categories','tbl_notes.cat_id = tbl_categories.id');
+    $rows = $db->get('tbl_notes');
+}
+
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 
@@ -15,7 +46,7 @@
     <meta name="keywords" content="">
 
     <!-- ==== Favicon ==== -->
-    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="icon" href="Favicon.png" type="image/png">
 
     <!-- ==== Google Font ==== -->
     <link rel="stylesheet"
@@ -59,14 +90,9 @@
             <div class="header--topbar bg-black">
                 <div class="container">
 
-                    <!-- Header Topbar Links Start -->
+                    <!-- Header Topbar Links Start-->
                     <ul class="header--topbar-links nav ff--primary float--right">
-                        <!--<li>
-                            <a href="../cart.html" title="Cart" data-toggle="tooltip" data-placement="bottom">
-                                <i class="fa fa-shopping-basket"></i>
-                                <span class="badge"></span>
-                            </a>
-                        </li>-->
+                      
                         <li>
                             <a href="#" class="btn-link">
                                 <i class="fa mr--8 fa-user-o"></i>
@@ -94,13 +120,13 @@
                         <!-- Header Navbar Logo Start -->
                         <div class="header--navbar-logo navbar-brand">
                             <a href="../members/home.php">
-                                <img src="../members/blacklogosm.png" class="normal" alt="">
-                                <img src="../members/whitelogosm.png" class="sticky" alt="">
+                                <img src="blacklogosm.png" class="normal" alt="">
+                                <img src="whitelogosm.png" class="sticky" alt="">
                             </a>
                         </div>
                         <!-- Header Navbar Logo End -->
                     </div>
-
+<!-- Header Navigation Links -->
                     <div id="headerNav" class="navbar-collapse collapse float--right">
                         <!-- Header Nav Links Start -->
                         <ul class="header--nav-links style--1 nav ff--primary">
@@ -166,12 +192,12 @@
             data-overlay="0.85">
             <div class="container">
                 <div class="title">
-                    <h2 class="h1 text-white">My Friends</h2>
+                    <h2 class="h1 text-white">My Album</h2>
                 </div>
 
                 <ul class="breadcrumb text-gray ff--primary">
                     <li><a href="../members/home.php" class="btn-link">Home</a></li>
-                    <li class="active"><span class="text-primary">My Friends</span></li>
+                    <li class="active"><span class="text-primary">My Album</span></li>
                 </ul>
             </div>
         </div>
@@ -187,10 +213,10 @@
                             <!-- Filter Nav Start -->
                             <div class="filter--nav pb--60 clearfix">
                                 <div class="filter--link float--left">
-                                    <h2>Our Friends Collection of Notes</h2>
+                                    <h2>Your Collection of Notes</h2>
                                 </div>
 
-                              <!-- <div class="filter--options float--right">
+                               <!-- <div class="filter--options float--right">
                                     <label>
                                         <span class="fs--14 ff--primary fw--500 text-darker">Show By :</span>
 
@@ -217,123 +243,51 @@
                             <!-- Activity List Start -->
                             <div class="activity--list">
                                 <!-- Activity Items Start -->
-                                <ul class="activity--items nav">
-
-                                    
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity">
-                                                <a href="member-activity-personal.php">
-
-                                                </a>
-                                            </div>
-
-
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    
-                                    
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity">
-                                                <a href="member-activity-personal.php">
-                                                    
-                                                </a>
-                                            </div>
-
-                                            <div class="activity--info fs--14">
-                                                
-
-
-                                               
-
-                                                <div class="activity--comments fs--12">
-                                                    <ul class="acomment--items nav">
-                                                        <li>
-                                                            
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    
-                                    
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity">
-                                                <a href="member-activity-personal.php">
-                                            </div>
-                                               
-                                                <div class="activity--content">
-                                                    <div class="link--embed">
-                                                        
-                                                    </div>
-                                                </div>
-                                            
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    
+                                <ul class="activity--items nav"> 
                                     <li>
                                         <!-- Activity Item Start -->
                                         <div class="activity--item">
 
+                                            <div class="activity--info fs--14">
 
-                                           
-                                            
+                                                <div class="activity--content">
+
+                                                </div>
+                                            </div>
                                         </div>
                                         <!-- Activity Item End -->
                                     </li>
-                                    <li>
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity--avatar">
-                                                <a href="member-activity-personal.php">
-                                                    <img src="img/activity-img/avatar-07.jpg" alt="">
-                                                </a>
-                                            </div>
-
-                                            <div class="activity--info fs--14">
-                                                <div class="activity--header">
-                                                    <p><a href="member-activity-personal.php">Anita J. Lilley</a>
-                                                        posted an update in the group <a
-                                                            href="group-home.html">Lens-bians Photography</a></p>
+                                    <?php foreach ($rows as $row):?>
+                                        <li>
+                                            <!-- Activity Item Start -->
+                                            <div class="activity--item">
+                                                <div class="activity--avatar">
+                                                    <a href="member-activity-personal.php">
+                                                        <img src="img/activity-img/avatar-08.jpg" alt="">
+                                                    </a>
                                                 </div>
 
-                                                <div class="activity--meta fs--12">
-                                                    <p><i class="fa mr--8 fa-clock-o"></i>yesterday at 08:20 am</p>
-                                                </div>
+                                                <div class="activity--info fs--14">
+                                                    <div class="activity--header">
+                                                        <p><a href="member-activity-personal.php?user_id=<?php echo $_SESSION['user_id']?>"><?php echo $row['first_name'].$row['last_name']?></a> posted
+                                                            an Note on <?php echo $row['cat_name']?> </p>
+                                                    </div>
 
-                                                <div class="activity--content">
-                                                    <div class="gallery--embed" data-trigger="gallery_popup">
-                                                        <ul class="nav AdjustRow">
-                                                        
-                                                              
-                                                        </ul>
+                                                    <div class="activity--meta fs--12">
+                                                        <p><i class="fa mr--8 fa-clock-o"></i><?php echo $row['note_date']?></p>
+                                                    </div>
+
+                                                    <div class="activity--content">
+                                                        <p>It is a long established fact that a reader will be distracted by
+                                                            the readable content of a page when looking at its layout. The
+                                                            point of using Lorem Ipsum.</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    </li>
-                                    <li>
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            
+                                            <!-- Activity Item End -->
+                                        </li>
+                                    <?php endforeach; ?>
 
-                                            <div class="activity--info fs--14">
-                                            
-
-                                               
-
-                                                
-                                            </div>
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    </li>
-                                    <li>
-
-                                    </li>
                                 </ul>
                                 <!-- Activity Items End -->
                             </div>
@@ -352,83 +306,43 @@
 
                     <!-- Main Sidebar Start -->
                     <div class="main--sidebar col-md-4 pb--60" data-trigger="stickyScroll">
-                        <div class="filter--link float--left">
-                            <h5>Add a Friend (+)</h5>
-                        </div>
-                        <br>
-                        <br>
-
                         <!-- Widget Start -->
                         <div class="widget">
                             <h2 class="h6 fw--700 widget--title">Add a Note</h2>
                             <!-- Buddy Finder Widget Start -->
                             <div class="buddy-finder--widget">
-                                <form action="#">
+                                <form id="add_note_form" action="#" method="post">
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="form-group">
-                                                <label>
-                                                    <select name="date" class="form-control form-sm"
-                                                        data-trigger="selectmenu">
-                                                        
-														<input type="date" name="birtdate" placeholder="select Birth date" >
-														
-														
-														<!--<option value="date">*Select a Date</option>
-                                                        <option value="today">Today</option>
-                                                        <option value="datecode">Another Date</option>-->
-                                                    </select>
-                                                </label>
+                                                 <input type="date" name="note_add_date">
                                             </div>
                                         </div>
 
                                         <div class="col-xs-12">
                                             <div class="form-group">
-                                                <label>
-                                                    <select name="friends category" class="form-control form-sm"
-                                                        data-trigger="selectmenu">
-                                                        <option value="category">*Select a Category</option>
-                                                        <option value="fave">Favorite Stories</option>
-                                                        <option value="fromheart">From the Heart</option>
-                                                        <option value="ourtraditions">Our Traditions</option>
-                                                        <option value="ourtime">Our Moments in Time</option>
-                                                        <option value="ourachievements">Our Achievements</option>
-                                                        <option value="ourchallenges">Our Challenges</option>
-                                                        <option value="ourrecipes">Our Recipes</option>
-                                                        <option value="pets">Our Pets</option>
-                                                        <option value="ourtestimonies">Our Testimonies</option>
-                                                        <option value="ourclubs">Our Affiliations/Clubs</option>
-                                                        <option value="special">Our Special Events</option>
-                                                        <option value="oursports">Our Sports</option>
-                                                        <option value="mentors">Our Mentors</option>
-                                                        <option value="memoryof">In Memory Of</option>
-                                                        <option value="other">Other</option>
-                                                    </select>
-                                                </label>
+                                                <select name="category" class="form-control form-sm category"
+                                                    data-trigger="selectmenu">
+                                                    <option value="category">*Select a Category</option>
+                                                    <option value="1">My Story</option>
+                                                    <option value="2">My Message from the Heart</option>
+                                                    <option value="3">My Likes and Dislikes</option>
+                                                    <option value="4">My Hobbies</option>
+                                                    <option value="5">My Sports</option>
+                                                    <option value="6">My Fun Facts</option>
+                                                    <option value="7">My Adventures</option>
+                                                    <option value="8">My Testimonies</option>
+                                                    <option value="9">My Education</option>
+                                                    <option value="10">My Affiliations</option>
+                                                    <option value="11">My Thoughts</option>
+                                                    <option value="12">Other Notes</option>
+                                                </select>
                                             </div>
                                         </div>
-
                                         <div class="col-xs-12">
                                             <div class="form-group">
                                                 <label>
-                                                    <select name="friends" class="form-control form-sm"
-                                                        data-trigger="selectmenu">
-                                                        <option value="pickfriend">*Pick a Friend</option>
-                                                        <option value="">Jack Sparrow</option>
-                                                        <option value="">Lucille Ball</option>
-                                                        <option value="">Billy Graham</option>
-                                                        <option value="">Brad Pitt</option>
-                                                        <option value="">Betsy Ross</option>
-                                                        <option value="more">More Options</option>
-                                                    </select>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xs-12">
-                                            <div class="form-group">
-                                                <label>
-                                                    <select name="multimedia" class="form-control form-sm"
+                                                    <select name="multimedia" class="form-control form-sm multimedia"
                                                         data-trigger="selectmenu">
                                                         <option value="addmedia">Add Comment, Photo or Video</option>
                                                         <option value="addtext">Add Text</option>
@@ -438,12 +352,9 @@
                                                 </label>
                                             </div>
                                         </div>
-
                                         <div class="col-xs-12">
-                                            &NonBreakingSpace;&NonBreakingSpace;&NonBreakingSpace;&NonBreakingSpace;&NonBreakingSpace;&NonBreakingSpace;<button
-                                                type="post" class="btn btn-primary">Save</button>
-                                            &NonBreakingSpace;&NonBreakingSpace;<button type="cancel"
-                                                class="btn btn-primary">Cancel</button>
+                                            <button type="submit" class="btn btn-primary activity-note-add">Save</button>
+                                            <button type="cancel" class="btn btn-primary">Cancel</button>
                                         </div>
                                 </form>
                             </div>
@@ -457,17 +368,18 @@
 
                             <!-- Text Widget Start -->
                             <div class="buddy-finder--widget">
-                                <form action="#">
+                                <form action="#" method="post" id="view_note_form">
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="form-group">
                                                 <label>
-                                                    <select name="date" class="form-control form-sm"
+                                                    <select name="view_date" class="form-control form-sm"
                                                         data-trigger="selectmenu">
                                                         <option value="date">Select a Date</option>
                                                         <option value="today">Today</option>
-                                                        <option value="datecode">Another Date</option>
+                                                        <option value="anotherdate">Another Date</option>
                                                     </select>
+
                                                 </label>
                                             </div>
                                         </div>
@@ -475,52 +387,32 @@
                                         <div class="col-xs-12">
                                             <div class="form-group">
                                                 <label>
-                                                    <select name="friends" class="form-control form-sm"
-                                                        data-trigger="selectmenu">
-                                                        <option value="pickfriend">*Pick a Friend</option>
-                                                        <option value="">Jack Sparrow</option>
-                                                        <option value="">Lucille Ball</option>
-                                                        <option value="">Billy Graham</option>
-                                                        <option value="">Brad Pitt</option>
-                                                        <option value="">Betsy Ross</option>
-                                                        <option value="more">More Options</option>
-                                                    </select>
-                                                </label>
-                                            </div>
-                                        </div>
 
-                                        <div class="col-xs-12">
-                                            <div class="form-group">
-                                                <label>
-                                                    <select name="friends category" class="form-control form-sm"
-                                                        data-trigger="selectmenu">
+                                                    <select name="view_category" class="form-control form-sm category"
+                                                            data-trigger="selectmenu">
                                                         <option value="category">*Select a Category</option>
-                                                        <option value="fave">Favorite Stories</option>
-                                                        <option value="fromheart">From the Heart</option>
-                                                        <option value="ourtraditions">Our Traditions</option>
-                                                        <option value="ourtime">Our Moments in Time</option>
-                                                        <option value="ourachievements">Our Achievements</option>
-                                                        <option value="ourchallenges">Our Challenges</option>
-                                                        <option value="ourrecipes">Our Recipes</option>
-                                                        <option value="pets">Our Pets</option>
-                                                        <option value="ourtestimonies">Our Testimonies</option>
-                                                        <option value="ourclubs">Our Affiliations/Clubs</option>
-                                                        <option value="special">Our Special Events</option>
-                                                        <option value="oursports">Our Sports</option>
-                                                        <option value="mentors">Our Mentors</option>
-                                                        <option value="memoryof">In Memory Of</option>
-                                                        <option value="other">Other</option>
+                                                        <option value="1">My Story</option>
+                                                        <option value="2">My Message from the Heart</option>
+                                                        <option value="3">My Likes and Dislikes</option>
+                                                        <option value="4">My Hobbies</option>
+                                                        <option value="5">My Sports</option>
+                                                        <option value="6">My Fun Facts</option>
+                                                        <option value="7">My Adventures</option>
+                                                        <option value="8">My Testimonies</option>
+                                                        <option value="9">My Education</option>
+                                                        <option value="10">My Affiliations</option>
+                                                        <option value="11">My Thoughts</option>
+                                                        <option value="12">Other Notes</option>
                                                     </select>
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="text--widget">
-                                        </div>
 
+                                        </div>
                                         <div class="col-xs-12">
-                                            <button type="post" class="btn btn-primary">Search</button>
-                                            &NonBreakingSpace;&NonBreakingSpace;<button type="cancel"
-                                                class="btn btn-primary">Cancel</button>
+                                            <button type="submit" class="btn btn-primary view_note_submit">Search</button>
+                                            <button type="cancel" class="btn btn-primary">Cancel</button>
                                         </div>
                                     </div>
                                 </form>
@@ -543,7 +435,7 @@
                                                         data-trigger="selectmenu">
                                                         <option value="date">Select a Date</option>
                                                         <option value="today">Today</option>
-                                                        <option value="datecode">Another Date</option>
+                                                        <option value="anotherdate">Another Date</option>
                                                     </select>
                                                 </label>
                                             </div>
@@ -552,24 +444,22 @@
                                         <div class="col-xs-12">
                                             <div class="form-group">
                                                 <label>
-                                                    <select name="friends category" class="form-control form-sm"
+                                                    <select name="category" class="form-control form-sm"
                                                         data-trigger="selectmenu">
                                                         <option value="category">*Select a Category</option>
-                                                        <option value="fave">Favorite Stories</option>
-                                                        <option value="fromheart">From the Heart</option>
-                                                        <option value="ourtraditions">Our Traditions</option>
-                                                        <option value="ourtime">Our Moments in Time</option>
-                                                        <option value="ourachievements">Our Achievements</option>
-                                                        <option value="ourchallenges">Our Challenges</option>
-                                                        <option value="ourrecipes">Our Recipes</option>
-                                                        <option value="pets">Our Pets</option>
-                                                        <option value="ourtestimonies">Our Testimonies</option>
-                                                        <option value="ourclubs">Our Affiliations/Clubs</option>
-                                                        <option value="special">Our Special Events</option>
-                                                        <option value="oursports">Our Sports</option>
-                                                        <option value="mentors">Our Mentors</option>
-                                                        <option value="memoryof">In Memory Of</option>
-                                                        <option value="other">Other</option>
+                                                        <option value="mystory">My Story</option>
+                                                        <option value="mymessage">My Message from the Heart</option>
+                                                        <option value="mylikes">My Likes and Dislikes</option>
+                                                        <option value="myhobbies">My Hobbies</option>
+                                                        <option value="mysports">My Sports</option>
+                                                        <option value="myfunfacts">My Fun Facts</option>
+                                                        <option value="myadventures">My Adventures</option>
+                                                        <option value="mytestimonies">My Testimonies</option>
+                                                        <option value="myeducation">My Education</option>
+                                                        <option value="myaffiliations">My Affiliations</option>
+                                                        <option value="mythoughts   ">My Thoughts</option>
+                                                        <option value="othernotes">Other Notes</option>
+
                                                     </select>
                                                 </label>
                                             </div>
@@ -579,12 +469,12 @@
                                         </div>
                                         <div class="col-xs-12">
                                             <button type="post" class="btn btn-primary">Search</button>
-                                            &NonBreakingSpace;&NonBreakingSpace;<button type="cancel"
-                                                class="btn btn-primary">Cancel</button>
+                                            <button type="cancel" class="btn btn-primary">Cancel</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
+
 
                         </div>
                         <!-- Widget End -->
@@ -617,13 +507,10 @@
 
                             <!-- Text Widget Start -->
                             <div class="text--widget">
-                                <p> MyNotes4U is a collection of notes, pictures and videos capturing a lifetime of your
-                                    adventures, thoughts and experiences in an album. We make it easy for you to share
-                                    with family and friends.</p>
+                                <p> MyNotes4U is a collection of notes, pictures and videos capturing a lifetime of your adventures, thoughts and experiences in an album. We make it easy for you to share with family and friends.</p>
 
-                                <p>A place where families can grow closer, save life moments and pass the family legacy
-                                    onto future generations. Just imagine . . . now your great, great, great
-                                    grandchildren can know their grandparent intimately. From your own words. </p>
+                                <p>A place where families can grow closer, save life moments and pass the family legacy on to future generations. Just imagine . . . now your great, great, great
+                                grandchildren can know their grandparent directly from you. </p>
                             </div>
                             <!-- Text Widget End -->
                         </div>
@@ -676,10 +563,9 @@
 
 
                     </div>
-
-                    <div class="col-md-3 col-xs-6 col-xxs-12 pb--60">
-                        <!-- Widget Start -->
-                        <div class="widget">
+  					<div class="col-md-3 col-xs-6 col-xxs-12 pb--60">
+                            <!-- Widget Start -->
+                            <div class="widget">
                                 <h2 class="h4 fw--700 widget--title">Favorite Groups</h2>
 
                                 <!-- Nav Widget Start -->
@@ -727,9 +613,10 @@
                                         </li>
                                     </ul>
                                 </div>
-                            <!-- Nav Widget End -->
-                        </div>
-                        <!-- Widget End -->
+                                <!-- Nav Widget End -->
+                            </div>
+                            <!-- Widget End -->
+                  
 
                     </div>
 
@@ -739,15 +626,15 @@
                         <div class="widget">
                             <h2 class="h4 fw--700 widget--title">Useful Links</h2>
 
-                            <!-- Links Widget Start -->
-                            <div class="links--widget">
-                                <ul class="nav">
-                                    <li><a href="#">My Account</a></li>
-                                    <li><a href="#">Join a Group</a></li>
-                                    <li><a href="../members/contact.html">Contact</a></li>
-                                </ul>
-                            </div>
-                            <!-- Links Widget End -->
+                             <!-- Links Widget Start -->
+                                <div class="links--widget">
+                                    <ul class="nav">
+                                        <li><a href="#">My Account</a></li>
+                                        <li><a href="#">Join a Group</a></li>
+                                        <li><a href="../members/contact.html">Contact</a></li>
+                                    </ul>
+                                </div>
+                                <!-- Links Widget End -->
                         </div>
                         <!-- Widget End -->
                     </div>
@@ -861,6 +748,8 @@
 
     <!-- ==== Main Script ==== -->
     <script src="js/main.js"></script>
+
+    <script src="js/custom.js"></script>
 
 </body>
 

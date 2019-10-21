@@ -1,3 +1,129 @@
+<?php
+session_start();
+require_once '../config/config.php';
+require_once BASE_PATH.'/includes/auth_validate.php';
+
+$db = getDbInstance();
+$rows = $db->get('tbl_users');
+$submitted_by_id = $_SESSION['user_id'];
+$db->where('id', $submitted_by_id);
+$submitted_by_user = $db->getOne('tbl_users')['first_name'].' '.$db->getOne('tbl_users')['last_name'];
+
+//Array ( [rec_title] => [rec_date] => 2019-10-21 [rec_submit_by] => 1 [rec_create_by] => [rec_type] => Array ( [0] => Breakfast [1] => Lunch [2] => Dinner ) [rec_ingredient] => [rec_instruction] => )
+if(isset($_POST) && isset($_POST['rec_date']) && $_POST['rec_date'] != '') {
+    $data_to_db = $_POST;
+    $data_to_db['rec_type'] = '';
+    if(isset($_POST['rec_type'])) {
+        foreach ($_POST['rec_type'] as $key => $item) {
+            if($key == 0) {
+                $data_to_db['rec_type'] .= $item;
+            } else {
+                $data_to_db['rec_type'] .= ','.$item;
+            }
+        }
+    }
+    $db = getDbInstance();
+    $last_id = $db->insert('tbl_recipes', $data_to_db);
+
+    if ($last_id)
+    {
+        $_SESSION['success'] = 'User added successfully!';
+        // Redirect to the Members page
+        header('Location: '. BASE_URL .'/members/groups-recipes.php');
+        // Important! Don't execute the rest put the exit/die.
+    }
+    else
+    {
+        $_SESSION['failure'] = 'Inert DB error'.$db->getLastError();
+    }
+}
+
+//if(isset($_POST) && isset($_POST['upfile']) && $_POST['upfile'] != '') {
+//    try {
+//        if (!isset($_FILES['upfile']['error']) ||is_array($_FILES['upfile']['error'])) {
+//            throw new RuntimeException('Invalid parameters.');
+//        }
+//
+//        // Check $_FILES['upfile']['error'] value.
+//        switch ($_FILES['upfile']['error']) {
+//            case UPLOAD_ERR_OK:
+//                break;
+//            case UPLOAD_ERR_NO_FILE:
+//                throw new RuntimeException('No file sent.');
+//            case UPLOAD_ERR_INI_SIZE:
+//            case UPLOAD_ERR_FORM_SIZE:
+//                throw new RuntimeException('Exceeded filesize limit.');
+//            default:
+//                throw new RuntimeException('Unknown errors.');
+//        }
+//
+//        // You should also check filesize here.
+//        if ($_FILES['upfile']['size'] > 1000000) {
+//            throw new RuntimeException('Exceeded filesize limit.');
+//        }
+//
+//        // DO NOT TRUST $_FILES['upfile']['mime'] VALUE !!
+//        // Check MIME Type by yourself.
+//        $finfo = new finfo(FILEINFO_MIME_TYPE);
+//        if (false === $ext = array_search(
+//                $finfo->file($_FILES['upfile']['tmp_name']),
+//                array(
+//                    'jpg' => 'image/jpeg',
+//                    'png' => 'image/png',
+//                    'gif' => 'image/gif',
+//                ),
+//                true
+//            )) {
+//            throw new RuntimeException('Invalid file format.');
+//        }
+//
+//        // get details of the uploaded file
+//        $fileTmpPath = $_FILES['upfile']['tmp_name'];
+//        $fileName = $_FILES['upfile']['name'];
+//        $fileSize = $_FILES['upfile']['size'];
+//        $fileType = $_FILES['upfile']['type'];
+//        $fileNameCmps = explode(".", $fileName);
+//        $fileExtension = strtolower(end($fileNameCmps));
+//
+//        $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+//
+//        print_r("herellllll");
+//        $allowedfileExtensions = array('jpg', 'gif', 'png');
+//        if (in_array($fileExtension, $allowedfileExtensions)) {
+//            print_r("herellllll");
+//            // directory in which the uploaded file will be moved
+//            $uploadFileDir = '../uploads/';
+//            $dest_path = $uploadFileDir . $newFileName;
+//
+//            if(move_uploaded_file($fileTmpPath, $dest_path))
+//            {
+//                $response = array(
+//                    "status" => "success",
+//                    "error" => false,
+//                    "message" => "File uploaded successfully"
+//                );
+//                echo json_encode($response);
+//            }
+//            else
+//            {
+//                throw new RuntimeException('Failed to move uploaded file.');
+//            }
+//        }
+//
+//
+//
+//    } catch (RuntimeException $e) {
+//        $response = array(
+//            "status" => "error",
+//            "error" => true,
+//            "message" => $e->getMessage()
+//        );
+//        print_r($e->getMessage());
+//    }
+//
+//}
+
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -113,7 +239,7 @@
 
                                 <ul class="dropdown-menu">
                                     <li class="active">
-										<a href="../members/activity-me.html"><span>My Album</span></a></li>
+										<a href="activity-me.php"><span>My Album</span></a></li>
                                     <li><a href="../members/activity-fam.html"><span>My Family</span></a></li>
                                     <li><a href="../members/activity-frd.html"><span>My Friends</span></a></li>
                                   
@@ -128,12 +254,12 @@
                                 </a>
 							   
 								<ul class="dropdown-menu"><li>
-									<a href="members.html"><span>Members</span></a></li>-->
+									<a href="members.php"><span>Members</span></a></li>-->
                                 
-                            <li><a href="../members/members.html"><span>Members</span></a></li>
+                            <li><a href="../members/members.php"><span>Members</span></a></li>
 								
                                <!-- </ul>-->
-                           
+                            
 						
 						
 						
@@ -149,14 +275,14 @@
 									<li><a href="../members/groups-events.html"><span>Events</span></a></li>
 									<li><a href="../members/groups-homerepair.html"><span>Home Repairs</span></a></li>
 									<li><a href="../members/groups-pets.html"><span>Pets</span></a></li>
-									<li><a href="../members/groups-recipes.html"><span>Recipes</span></a></li>
+									<li><a href="groups-recipes.php"><span>Recipes</span></a></li>
 									<li><a href="../members/groups-sports.html"><span>Sports</span></a></li>
 									<li><a href="../members/groups-travel.html"><span>Travel</span></a></li>
 								
                                 </ul>
                             </li>
                             
-                          
+                            
                             <li><a href="../members/contact.html"><span>Contact</span></a></li>
                         </ul>
                         <!-- Header Nav Links End -->
@@ -189,293 +315,75 @@
                     <!-- Main Content Start -->
                     <div class="main--content col-md-12 pb--60">
                         <div class="main--content-inner">
-                            <!-- Filter Nav Start -->
-                            <div class="filter--nav pb--30 clearfix">
-                                <div class="filter--link float--left">
-                                    <h2 class="h4">Add a Recipe (+)</h2>
+		                    <div><h2>Add Your Recipe to the Group</h2></div>
+		                    <form name="recipe-add-form" action="#" method="post">
+					            <div class="box--items-h">
+                                    <div class="row gutter--15 AdjustRow">
+                                      <div class="box--item text-center">
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="box--item text-left">
+                                                    <div><label><h3>Recipe Title:&nbsp;&nbsp;&nbsp;<input type="text" name="rec_title"></h3></label></div></div>
+
+                                                <div class="box--item text-left">
+                                                    <div><label><h6>Date:&nbsp;&nbsp;&nbsp;<?php echo date('Y-m-d');?></h6></label></div></div>
+                                                    <input type="hidden" name="rec_date" value="<?php echo date('Y-m-d');?>">
+
+                                                <div class="box--item text-left">
+                                                    <div><label><h6>Submitted by:&nbsp;&nbsp;&nbsp;<?php echo $submitted_by_user;?></h6></label></div></div>
+                                                    <input type="hidden" name="rec_submit_by" value="<?php echo $submitted_by_id;?>">
+
+                                                <div class="box--item text-left">
+                                                    <p><h6>Enter the name of the person who created the recipe in the <strong>"Created by"</strong> box.</h6></p>
+                                                    <div><label><h6>Created by:&nbsp;&nbsp;&nbsp;<input type="text" name="rec_create_by">&nbsp;&nbsp;&nbsp;</h6></label></div></div>
+
+                                                <div class="box--item text-left">
+                                                    <p><label><h6>Select the applicable checkbox(es) for the type of recipe you are adding.</h6></label>
+
+                                                        <label>
+                                                            <input type="checkbox" name="rec_type[]" value="Breakfast" id="RecipeType_0">Breakfast
+                                                            <input type="checkbox" name="rec_type[]" value="Lunch" id="RecipeType_1">Lunch
+                                                            <input type="checkbox" name="rec_type[]" value="Dinner" id="RecipeType_2">Dinner
+                                                            <input type="checkbox" name="rec_type[]" value="Dessert" id="RecipeType_3">Dessert
+                                                            <input type="checkbox" name="rec_type[]" value="Family Favorite" id="RecipeType_4">Family Favorite
+                                                            <input type="checkbox" name="rec_type[]" value="Gluten Free" id="RecipeType_5">Gluten Free
+                                                            <input type="checkbox" name="rec_type[]" value="Vegetarian" id="RecipeType_6">Vegetarian
+                                                            <br>
+                                                        </label>
+
+<!--                                                    <div class="box--item text-left">-->
+<!--                                                         <div><label><h6>Add a photo of your recipe.&nbsp;&nbsp;&nbsp;</h6>-->
+<!--                                                            <input name="upfile" type="file" class="form-control" id="upfile">-->
+<!--                                                             </label>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+
+                                                    <div class="box--item text-left textareaw">
+                                                          <div><label><h6>Add the recipe ingredients.&nbsp;&nbsp;&nbsp;</h6></label>
+                                                              <textarea rows="4" cols="100%" name="rec_ingredient" placeholder="Enter text here..."></textarea>
+                                                         </div>
+                                                    </div>
+
+
+                                                    <div class="box--item text-left textareaw">
+                                                              <div><label><h6>Add the recipe instructions.&nbsp;&nbsp;&nbsp;</h6></label>
+                                                                  <textarea rows="4" cols="100%" name="rec_instruction" placeholder="Enter text here..."></textarea>
+                                                             </div>
+                                                          </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                      </div>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row text-right">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <button type="cancel" class="btn btn-primary">Cancel</button>
                                 </div>
 
-                                <div class="filter--options float--right">
-                                    <label>
-                                        <span class="h4 ""fs--14 ff--primary fw--500 text-darker">Find a Recipe :</span>
-								
-                                        <select name="membersfilter" class="form-control form-sm" data-trigger="selectmenu">
-                                          <option value="last-active" selected>Most Current Added</option>
-                                            <option value="most-members">Breakfast</option>
-                                            <option value="newly-created">Lunch</option>
-                                            <option value="alphabetical">Dinner</option>
-											<option value="alphabetical">Desserts</option>
-											<option value="alphabetical">Family Favorite</option>
-											<option value="alphabetical">Gluten Free</option>
-											<option value="alphabetical">Vegetarian</option>
-											
-                                        </select>
-									</label>
-									
-							<div>
-							A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z	
-									</div> Hari - a user can select to sort by recipe type, or the title alphabetically
-                                </div>
-                            </div>
-                            <!-- Filter Nav End -->
-                            
-                            <!-- Box Items Start -->
-                            <div class="box--items-h">
-                                <div class="row gutter--15 AdjustRow">
-                                    <div class="col-md-12 col-xs-12 col-xxs-12">
-                                        <!-- Box Item Start -->
-                                       <div class="box--item text-center">
-                                           <!--  <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="img/group-img/01.jpg" alt="">
-                                            </a>
-
-                                            <div class="info">
-                                                <div class="icon fs--18 text-lightest bg-primary">
-                                                    <i class="fa fa-cutlery"></i>
-                                                </div>
-
-                                                <div class="title">
-                                                    <h2><a href="#">Title of Receipt</a></h2>
-                                                </div>
-
-                                                <div class="meta">
-                                                    <!--<p><i class="fa mr--8 fa-clock-o"></i>Active 8 days ago</p>
-                                                    <p><i class="fa mr--8 fa-user-o"></i>Public Group / 2500 Members</p>
-												  <p><h4>Submitted by&nbsp;:&nbsp;Auto Populate Name</h4> </p>
-												<p><strong>Receipt Type(s)&nbsp;:&nbsp;</strong>auto populate from add receipt type function, can be more than one receipt type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date Added&nbsp;:&nbsp;auto populate from add receipt page</p>
-                                                </div>-->
-												
-				<!--	<div class="desc text-darker">
-                      <p>HARI - FUNCTIONALITY - This is the most current receipt added according to the Receipt Type drop down box at the top. Most current added is the default value for the dropdown. Values are: Breakfast, Lunch, Dinner, Desserts, Family Favorite, Vegetarian and Gluten Free. The other receipts displayed on the page with show in the smaller boxes. When a receipt box is selected from below, it will replace the receipt that is displayed in this box.</p>
-                                                </div>-->
-
-                                                
-                                            </div>
-                                        </div>
-                                        <!-- Box Item End -->
-                                   
-
-                                    <div class="col-md-4 col-xs-6 col-xxs-12">
-                                        <!-- Box Item Start -->
-                                        <div class="box--item text-center">
-                                            <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="../members/img/recipe800x419.png" alt="">
-                                            </a>
-
-                                            <div class="info">
-                                                <div class="icon fs--18 text-lightest bg-primary">
-                                                    <i class="fa fa-cutlery"></i>
-                                                </div>
-
-                                                <div class="title">
-                                                    <h2 class="h4"><a href="group-home.html">Title of Recipe</a></h2>
-													<p><h6>Recipe Type: xxxxxxxxxxxxxxxx</h6></p>
-                                                </div>
-
-                                                <div class="desc text-darker">
-													<p>Created by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;</p>
-													<p>Recipe Ingredients</p>
-													<p>Recipe Instructions</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Box Item End -->
-									</div><br>
-
-                                     <div class="col-md-4 col-xs-6 col-xxs-12">
-                                        <!-- Box Item Start -->
-                                        <div class="box--item text-center">
-                                            <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="../members/img/recipe800x419.png" alt="">
-                                            </a>
-
-                                            <div class="info">
-                                                <div class="icon fs--18 text-lightest bg-primary">
-                                                    <i class="fa fa-cutlery"></i>
-                                                </div>
-
-                                                <div class="title">
-                                                    <h2 class="h4"><a href="group-home.html">Title of Recipe</a></h2>
-													<p><h6>Recipe Type: xxxxxxxxxxxxxxxx</h6></p>
-                                                </div>
-
-                                                <div class="desc text-darker">
-													<p>Created by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;</p>
-													<p>Recipe Ingredients</p>
-													<p>Recipe Instructions</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Box Item End -->
-                                    </div>
-
-                                     <div class="col-md-4 col-xs-6 col-xxs-12">
-                                        <!-- Box Item Start -->
-                                        <div class="box--item text-center">
-                                            <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="../members/img/recipe800x419.png" alt="">
-                                            </a>
-
-                                            <div class="info">
-                                                <div class="icon fs--18 text-lightest bg-primary">
-                                                    <i class="fa fa-cutlery"></i>
-                                                </div>
-
-                                                <div class="title">
-                                                    <h2 class="h4"><a href="group-home.html">Title of Recipe</a></h2>
-													<p><h6>Recipe Type: xxxxxxxxxxxxxxxx</h6></p>
-                                                </div>
-
-                                                <div class="desc text-darker">
-													<p>Created by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;</p>
-													<p>Recipe Ingredients</p>
-													<p>Recipe Instructions</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Box Item End -->
-                                    </div>
-
-                                     <div class="col-md-4 col-xs-6 col-xxs-12">
-                                        <!-- Box Item Start -->
-                                        <div class="box--item text-center">
-                                            <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="../members/img/recipe800x419.png" alt="">
-                                            </a>
-
-                                            <div class="info">
-                                                <div class="icon fs--18 text-lightest bg-primary">
-                                                    <i class="fa fa-cutlery"></i>
-                                                </div>
-
-                                                <div class="title">
-                                                    <h2 class="h4"><a href="group-home.html">Title of Recipe</a></h2>
-													<p><h6>Recipe Type: xxxxxxxxxxxxxxxx</h6></p>
-                                                </div>
-
-                                                <div class="desc text-darker">
-													<p>Created by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;</p>
-													<p>Recipe Ingredients</p>
-													<p>Recipe Instructions</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Box Item End -->
-                                    </div>
-
-                                     <div class="col-md-4 col-xs-6 col-xxs-12">
-                                        <!-- Box Item Start -->
-                                        <div class="box--item text-center">
-                                            <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="../members/img/recipe800x419.png" alt="">
-                                            </a>
-
-                                            <div class="info">
-                                                <div class="icon fs--18 text-lightest bg-primary">
-                                                    <i class="fa fa-cutlery"></i>
-                                                </div>
-
-                                                <div class="title">
-                                                    <h2 class="h4"><a href="group-home.html">Title of Recipe</a></h2>
-													<p><h6>Recipe Type: xxxxxxxxxxxxxxxx</h6></p>
-                                                </div>
-
-                                                <div class="desc text-darker">
-													<p>Created by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;</p>
-													<p>Recipe Ingredients</p>
-													<p>Recipe Instructions</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Box Item End -->
-                                    </div>
-
-                                     <div class="col-md-4 col-xs-6 col-xxs-12">
-                                        <!-- Box Item Start -->
-                                        <div class="box--item text-center">
-                                            <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="../members/img/recipe800x419.png" alt="">
-                                            </a>
-
-                                            <div class="info">
-                                                <div class="icon fs--18 text-lightest bg-primary">
-                                                    <i class="fa fa-cutlery"></i>
-                                                </div>
-
-                                                <div class="title">
-                                                    <h2 class="h4"><a href="group-home.html">Title of Recipe</a></h2>
-													<p><h6>Recipe Type: xxxxxxxxxxxxxxxx</h6></p>
-                                                </div>
-
-                                                <div class="desc text-darker">
-													<p>Created by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;</p>
-													<p>Recipe Ingredients</p>
-													<p>Recipe Instructions</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Box Item End -->
-                                    </div>
-
-                                     <div class="col-md-4 col-xs-6 col-xxs-12">
-                                        <!-- Box Item Start -->
-                                        <div class="box--item text-center">
-                                            <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="../members/img/recipe800x419.png" alt="">
-                                            </a>
-
-                                            <div class="info">
-                                                <div class="icon fs--18 text-lightest bg-primary">
-                                                    <i class="fa fa-cutlery"></i>
-                                                </div>
-
-                                                <div class="title">
-                                                    <h2 class="h4"><a href="group-home.html">Title of Recipe</a></h2>
-													<p><h6>Recipe Type: xxxxxxxxxxxxxxxx</h6></p>
-                                                </div>
-
-                                                <div class="desc text-darker">
-													<p>Created by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;</p>
-													<p>Recipe Ingredients</p>
-													<p>Recipe Instructions</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Box Item End -->
-                                    </div>
- 
-               </div>
-
-                            <!-- Page Count Start -->
-                            <div class="page--count pt--30">
-                                <label class="ff--primary fs--14 fw--500 text-darker">
-                                    <span>Viewing</span>
-
-                                    <a href="#" class="btn-link"><i class="fa fa-caret-left"></i></a>
-                                    <input type="number" name="page-count" value="01" class="form-control form-sm">
-                                    <a href="#" class="btn-link"><i class="fa fa-caret-right"></i></a>
-
-                                    <span>of 28</span>
-                                </label>
-                            </div>
-                            <!-- Page Count End -->
-                        </div>
+                            </form>
+					    </div>
                     </div>
-                    <!-- Main Content End -->
                 </div>
             </div>
         </section>
@@ -559,7 +467,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="../members/groups-recipes.html">
+                                            <a href="groups-recipes.php">
                                                 <i class="fa fa-folder-o"></i>
                                                 <span class="text">Recipes</span>
                                                 
@@ -635,55 +543,55 @@
                         <div class="recent-active-members--widget style--2">
                             <div class="owl-carousel" data-owl-items="12" data-owl-nav="true" data-owl-speed="1200" data-owl-responsive='{"0": {"items": "3"}, "481": {"items": "6"}, "768": {"items": "8"}, "992": {"items": "12"}}'>
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
                                 </div>
                             </div>
                         </div>

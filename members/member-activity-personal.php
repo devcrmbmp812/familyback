@@ -1,3 +1,12 @@
+<?php
+session_start();
+require_once '../config/config.php';
+require_once BASE_PATH.'/includes/auth_validate.php';
+$db = getDbInstance();
+$db->join('tbl_users', 'tbl_notes.user_id = tbl_users.id')->join('tbl_categories','tbl_notes.cat_id = tbl_categories.id');
+$db->where('tbl_notes.user_id', $_GET['user_id']);
+$rows = $db->get('tbl_notes');
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -147,7 +156,7 @@
 
                                 <ul class="dropdown-menu">
                                     <li><a href="activity.html"><span>Activity</span></a></li>
-                                    <li class="active"><a href="members.html"><span>Members</span></a></li>
+                                    <li class="active"><a href="members.php"><span>Members</span></a></li>
                                     <li><a href="groups.html"><span>Groups</span></a></li>
                                 </ul>
                             </li>
@@ -173,10 +182,10 @@
                                 <div class="dropdown-menu">
                                     <div class="row">
                                         <ul class="col-md-2">
-                                            <li><a href="members.html">Members</a></li>
+                                            <li><a href="members.php">Members</a></li>
                                             <li><a href="groups.html">Groups</a></li>
                                             <li><a href="activity.html">Site Wide Activity</a></li>
-                                            <li><a href="member-activity-personal.html">Member Activity</a></li>
+                                            <li><a href="member-activity-personal.php">Member Activity</a></li>
                                             <li><a href="group-home.html">Group Activity</a></li>
                                         </ul>
 
@@ -289,7 +298,7 @@
                             <!-- Content Nav Start -->
                             <div class="content--nav pb--30">
                                 <ul class="nav ff--primary fs--14 fw--500 bg-lighter">
-                                    <li class="active"><a href="member-activity-personal.html">Activity</a></li>
+                                    <li class="active"><a href="member-activity-personal.php">Activity</a></li>
                                     <li><a href="member-profile.html">Profile</a></li>
                                     <li><a href="member-friends.html">Friends</a></li>
                                     <li><a href="member-groups.html">Groups</a></li>
@@ -334,18 +343,45 @@
                             <div class="activity--list">
                                 <!-- Activity Items Start -->
                                 <ul class="activity--items nav">
+                                    <?php foreach ($rows as $row):?>
+                                        <li>
+                                            <!-- Activity Item Start -->
+                                            <div class="activity--item">
+                                                <div class="activity--avatar">
+                                                    <a href="member-activity-personal.php">
+                                                        <img src="img/activity-img/avatar-01.jpg" alt="">
+                                                    </a>
+                                                </div>
+
+                                                <div class="activity--info fs--14">
+                                                    <div class="activity--header">
+                                                        <p><a href="member-activity-personal.php"><?php echo $row['first_name'].$row['last_name']?></a> posted an Note on <?php echo $row['cat_name']?></p>
+                                                    </div>
+
+                                                    <div class="activity--meta fs--12">
+                                                        <p><i class="fa mr--8 fa-clock-o"></i><?php echo $row['note_date']?></p>
+                                                    </div>
+
+                                                    <div class="activity--content">
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam quo deserunt a suscipit perferendis dicta at eveniet officiis!</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Activity Item End -->
+                                        </li>
+                                    <?php endforeach;?>
                                     <li>
                                         <!-- Activity Item Start -->
                                         <div class="activity--item">
                                             <div class="activity--avatar">
-                                                <a href="member-activity-personal.html">
+                                                <a href="member-activity-personal.php">
                                                     <img src="img/activity-img/avatar-01.jpg" alt="">
                                                 </a>
                                             </div>
 
                                             <div class="activity--info fs--14">
                                                 <div class="activity--header">
-                                                    <p><a href="member-activity-personal.html">Eileen K. Ruiz</a> posted an update</p>
+                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> posted an update</p>
                                                 </div>
 
                                                 <div class="activity--meta fs--12">
@@ -363,14 +399,14 @@
                                         <!-- Activity Item Start -->
                                         <div class="activity--item">
                                             <div class="activity--avatar">
-                                                <a href="member-activity-personal.html">
+                                                <a href="member-activity-personal.php">
                                                     <img src="img/activity-img/avatar-01.jpg" alt="">
                                                 </a>
                                             </div>
 
                                             <div class="activity--info fs--14">
                                                 <div class="activity--header">
-                                                    <p><a href="member-activity-personal.html">Eileen K. Ruiz</a> posted an update in the group <a href="group-home.html">Crazy Music Lovers</a></p>
+                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> posted an update in the group <a href="group-home.html">Crazy Music Lovers</a></p>
                                                 </div>
 
                                                 <div class="activity--meta fs--12">
@@ -390,7 +426,7 @@
                                                         <li>
                                                             <div class="acomment--item clearfix">
                                                                 <div class="acomment--avatar">
-                                                                    <a href="member-activity-personal.html">
+                                                                    <a href="member-activity-personal.php">
                                                                         <img src="img/activity-img/avatar-04.jpg" alt="">
                                                                     </a>
                                                                 </div>
@@ -421,14 +457,14 @@
                                         <!-- Activity Item Start -->
                                         <div class="activity--item">
                                             <div class="activity--avatar">
-                                                <a href="member-activity-personal.html">
+                                                <a href="member-activity-personal.php">
                                                     <img src="img/activity-img/avatar-01.jpg" alt="">
                                                 </a>
                                             </div>
 
                                             <div class="activity--info fs--14">
                                                 <div class="activity--header">
-                                                    <p><a href="member-activity-personal.html">Eileen K. Ruiz</a> and <a href="member-activity-personal.html">Leticia J. Espinosa</a> are now friends</p>
+                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> and <a href="member-activity-personal.php">Leticia J. Espinosa</a> are now friends</p>
                                                 </div>
 
                                                 <div class="activity--meta fs--12">
@@ -442,14 +478,14 @@
                                         <!-- Activity Item Start -->
                                         <div class="activity--item">
                                             <div class="activity--avatar">
-                                                <a href="member-activity-personal.html">
+                                                <a href="member-activity-personal.php">
                                                     <img src="img/activity-img/avatar-01.jpg" alt="">
                                                 </a>
                                             </div>
 
                                             <div class="activity--info fs--14">
                                                 <div class="activity--header">
-                                                    <p><a href="member-activity-personal.html">Eileen K. Ruiz</a> posted an update in the group <a href="group-home.html">Crazy Music Lovers</a></p>
+                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> posted an update in the group <a href="group-home.html">Crazy Music Lovers</a></p>
                                                 </div>
 
                                                 <div class="activity--meta fs--12">
@@ -487,14 +523,14 @@
                                         <!-- Activity Item Start -->
                                         <div class="activity--item">
                                             <div class="activity--avatar">
-                                                <a href="member-activity-personal.html">
+                                                <a href="member-activity-personal.php">
                                                     <img src="img/activity-img/avatar-01.jpg" alt="">
                                                 </a>
                                             </div>
 
                                             <div class="activity--info fs--14">
                                                 <div class="activity--header">
-                                                    <p><a href="member-activity-personal.html">Eileen K. Ruiz</a> posted an update in the group <a href="group-home.html">Crazy Music Lovers</a></p>
+                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> posted an update in the group <a href="group-home.html">Crazy Music Lovers</a></p>
                                                 </div>
 
                                                 <div class="activity--meta fs--12">
@@ -536,14 +572,14 @@
                                         <!-- Activity Item Start -->
                                         <div class="activity--item">
                                             <div class="activity--avatar">
-                                                <a href="member-activity-personal.html">
+                                                <a href="member-activity-personal.php">
                                                     <img src="img/activity-img/avatar-01.jpg" alt="">
                                                 </a>
                                             </div>
 
                                             <div class="activity--info fs--14">
                                                 <div class="activity--header">
-                                                    <p><a href="member-activity-personal.html">Eileen K. Ruiz</a> joined the group <a href="group-home.html">Crazy Music Lovers</a></p>
+                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> joined the group <a href="group-home.html">Crazy Music Lovers</a></p>
                                                 </div>
 
                                                 <div class="activity--meta fs--12">
@@ -970,55 +1006,55 @@
                         <div class="recent-active-members--widget style--2">
                             <div class="owl-carousel" data-owl-items="12" data-owl-nav="true" data-owl-speed="1200" data-owl-responsive='{"0": {"items": "3"}, "481": {"items": "6"}, "768": {"items": "8"}, "992": {"items": "12"}}'>
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
                                 </div>
                             </div>
                         </div>

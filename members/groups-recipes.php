@@ -1,3 +1,11 @@
+<?php
+session_start();
+require_once '../config/config.php';
+require_once BASE_PATH.'/includes/auth_validate.php';
+$db = getDbInstance();
+$db->join('tbl_users', 'tbl_users.id = tbl_recipes.rec_submit_by');
+$rows = $db->get('tbl_recipes');
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -113,7 +121,7 @@
 
                                 <ul class="dropdown-menu">
                                     <li class="active">
-										<a href="../members/activity-me.html"><span>My Album</span></a></li>
+										<a href="activity-me.php"><span>My Album</span></a></li>
                                     <li><a href="../members/activity-fam.html"><span>My Family</span></a></li>
                                     <li><a href="../members/activity-frd.html"><span>My Friends</span></a></li>
                                   
@@ -128,12 +136,12 @@
                                 </a>
 							   
 								<ul class="dropdown-menu"><li>
-									<a href="members.html"><span>Members</span></a></li>-->
+									<a href="members.php"><span>Members</span></a></li>-->
                                 
-                            <li><a href="../members/members.html"><span>Members</span></a></li>
+                            <li><a href="../members/members.php"><span>Members</span></a></li>
 								
                                <!-- </ul>-->
-                            
+                           
 						
 						
 						
@@ -149,14 +157,14 @@
 									<li><a href="../members/groups-events.html"><span>Events</span></a></li>
 									<li><a href="../members/groups-homerepair.html"><span>Home Repairs</span></a></li>
 									<li><a href="../members/groups-pets.html"><span>Pets</span></a></li>
-									<li><a href="../members/groups-recipes.html"><span>Recipes</span></a></li>
+									<li><a href="groups-recipes.php"><span>Recipes</span></a></li>
 									<li><a href="../members/groups-sports.html"><span>Sports</span></a></li>
 									<li><a href="../members/groups-travel.html"><span>Travel</span></a></li>
 								
                                 </ul>
                             </li>
                             
-                            
+                          
                             <li><a href="../members/contact.html"><span>Contact</span></a></li>
                         </ul>
                         <!-- Header Nav Links End -->
@@ -190,15 +198,15 @@
                     <div class="main--content col-md-12 pb--60">
                         <div class="main--content-inner">
                             <!-- Filter Nav Start -->
-                            <!--<div class="filter--nav pb--30 clearfix">
+                            <div class="filter--nav pb--30 clearfix">
                                 <div class="filter--link float--left">
-                                    <h2 class="h4">Add a Receipt (+)</h2>
+                                    <h2 class="h4"><a href="groups-recipes-add.php">Add a Recipe (+)</a></h2>
                                 </div>
 
                                 <div class="filter--options float--right">
                                     <label>
-                                        <span class="fs--14 ff--primary fw--500 text-darker">Receipt Type :</span>
-
+                                        <span class="h4 ""fs--14 ff--primary fw--500 text-darker">Find a Recipe :</span>
+								
                                         <select name="membersfilter" class="form-control form-sm" data-trigger="selectmenu">
                                           <option value="last-active" selected>Most Current Added</option>
                                             <option value="most-members">Breakfast</option>
@@ -210,18 +218,22 @@
 											<option value="alphabetical">Vegetarian</option>
 											
                                         </select>
-                                    </label>
+									</label>
+									
+							<div>
+							A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z	
+									</div> Hari - a user can select to sort by recipe type, or the title alphabetically
                                 </div>
-                            </div>-->
+                            </div>
                             <!-- Filter Nav End -->
                             
                             <!-- Box Items Start -->
-                            <!--<div class="box--items-h">
+                            <div class="box--items-h">
                                 <div class="row gutter--15 AdjustRow">
                                     <div class="col-md-12 col-xs-12 col-xxs-12">
-                                        <!-- Box Item Start 
-                                        <div class="box--item text-center">
-                                            <a href="group-home.html" class="img" data-overlay="0.1">
+                                        <!-- Box Item Start -->
+                                       <div class="box--item text-center">
+                                           <!--  <a href="group-home.html" class="img" data-overlay="0.1">
                                                 <img src="img/group-img/01.jpg" alt="">
                                             </a>
 
@@ -235,107 +247,102 @@
                                                 </div>
 
                                                 <div class="meta">
-                                                   <!-- <p><i class="fa mr--8 fa-clock-o"></i>Active 8 days ago</p>
+                                                    <!--<p><i class="fa mr--8 fa-clock-o"></i>Active 8 days ago</p>
                                                     <p><i class="fa mr--8 fa-user-o"></i>Public Group / 2500 Members</p>
 												  <p><h4>Submitted by&nbsp;:&nbsp;Auto Populate Name</h4> </p>
-												<p><strong>Recipe Type(s)&nbsp;:&nbsp;</strong>auto populate from add recipe type function, can be more than one receipt type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date Added&nbsp;:&nbsp;auto populate from add recipe page</p>
+												<p><strong>Receipt Type(s)&nbsp;:&nbsp;</strong>auto populate from add receipt type function, can be more than one receipt type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date Added&nbsp;:&nbsp;auto populate from add receipt page</p>
+                                                </div>-->
 												
-												</div>Actual recipe content. Hari - When a user selects the photo of a recipe from the groups-recipes page this page should open at this size and with the information autopopulating. Same information, just larger.This can open in a new window, but the user needs a way to close it. </div>
-                                                </div>
-										   </div>
+				<!--	<div class="desc text-darker">
+                      <p>HARI - FUNCTIONALITY - This is the most current receipt added according to the Receipt Type drop down box at the top. Most current added is the default value for the dropdown. Values are: Breakfast, Lunch, Dinner, Desserts, Family Favorite, Vegetarian and Gluten Free. The other receipts displayed on the page with show in the smaller boxes. When a receipt box is selected from below, it will replace the receipt that is displayed in this box.</p>
+                                                </div>-->
+
+                                                
+                                            </div>
                                         </div>
                                         <!-- Box Item End -->
-							
-				<!-- Form Begin -->
-		
-		<div><h2>Add Your Recipe to the Group</h2></div>
-			<form>
-					 <div class="box--items-h">
-                         <div class="row gutter--15 AdjustRow">
-                              <div class="box--item text-center">
-									<div class="col-md-12 col-xs-12">
-                                        <div class="box--item text-left">
-											<div><label><h3>Recipe Title:&nbsp;&nbsp;&nbsp;<input type="text"></h3></label></div></div>
-										
-										  <div class="box--item text-left">
-                                            <div><label><h6>Date:&nbsp;&nbsp;&nbsp;Hari - defaults as the current date</h6></label></div></div>
-										
-										<div class="box--item text-left">
-                                            <div><label><h6>Submitted by:&nbsp;&nbsp;&nbsp;Hari - defaults from User ID</h6></label></div></div>
-										
-										<div class="box--item text-left">
-											<p><h6>Enter the name of the person who created the recipe in the <strong>"Created by"</strong> box.</h6></p>
-                                            <div><label><h6>Created by:&nbsp;&nbsp;&nbsp;<input type="text">&nbsp;&nbsp;&nbsp;</h6></label></div></div>
-										
-										<div class="box--item text-left">
-                                      <!--<select name="membersfilter" data-trigger="selectmenu">
-                                          <option value="last-active" selected>Select the <strong>Type of Recipe</strong> you are submitting.</option>
-                                            <option value="most-members">Breakfast</option>
-                                            <option value="newly-created">Lunch</option>
-                                            <option value="alphabetical">Dinner</option>
-											<option value="alphabetical">Desserts</option>
-											<option value="alphabetical">Family Favorite</option>
-											<option value="alphabetical">Gluten Free</option>
-											<option value="alphabetical">Vegetarian</option>
-											
-												</select>-->
-											
-											<p><label><h6>Select the applicable checkbox(es) for the type of recipe you are adding.</h6></label>
-											  <label>
-											    <input type="checkbox" name="Recipe Type" value="checkbox" id="RecipeType_0">
-											    &nbsp;Breakfast&nbsp;&nbsp;&nbsp;<input type="checkbox" name="Recipe Type" value="checkbox" id="RecipeType_1">&nbsp;Lunch&nbsp;&nbsp;&nbsp;<input type="checkbox" name="Recipe Type" value="checkbox" id="RecipeType_2">
-											    &nbsp;Dinner&nbsp;&nbsp;&nbsp;<input type="checkbox" name="Recipe Type" value="checkbox" id="RecipeType_3">&nbsp;Dessert&nbsp;&nbsp;&nbsp;
-												<input type="checkbox" name="Recipe Type" value="checkbox" id="RecipeType_4">
-											    &nbsp;Family Favorite&nbsp;&nbsp;&nbsp;
-											 
-											    <input type="checkbox" name="Recipe Type" value="checkbox" id="RecipeType_5">
-											    &nbsp;Gluten Free&nbsp;&nbsp;&nbsp;
-											  
-											    <input type="checkbox" name="Recipe Type" value="checkbox" id="RecipeType_6">
-											    &nbsp;Vegetarian&nbsp;&nbsp;&nbsp;
-											  <br>
-												<p>Hari - by selecting a checkbox above the recipe will appear in the recipe type selection on the groups-recipes.html page. More than one box can be selected, for example, dinner and gluten free, or breakfast and family favorite. It is really up to the user where the recipe will appear.</p>
-												 
-											</label> 
+                                   
 
-								  <div class="box--item text-left"> 
-											<div><label><h6>Add a photo of your recipe.&nbsp;&nbsp;&nbsp;</h6><input type="image"><img src="#" alt="" /></label></div></div>
-								  
-								  <div class="box--item text-left textareaw"> 
-									  <div><label><h6>Add the recipe ingredients.&nbsp;&nbsp;&nbsp;</h6></label>
-										  <p input type="text">Hari - I don't know how to make this box so that user can type into it. I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.</p></div>
-								  	 </div>
-								
-									
-							<div class="box--item text-left textareaw"> 
-									  <div><label><h6>Add the recipe instructions.&nbsp;&nbsp;&nbsp;</h6></label>
-										  <p input type="text">Hari -I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.I don't know how to make this box so that user can type into it.</p></div>
-								  	 </div>	  
-								  
-								  
-								  
-								  
-								  </label></div></div>
-						
-							 
-							 
-												
-												
-												
-												
-												</div>
-											
+                                    <?php foreach ($rows as $row):?>
+                                        <div class="col-md-4 col-xs-6 col-xxs-12">
+                                            <!-- Box Item Start -->
+                                            <div class="box--item text-center">
+                                                <a href="group-home.html" class="img" data-overlay="0.1">
+                                                    <img src="../members/img/recipe800x419.png" alt="">
+                                                </a>
 
-							
-			
-				
-			  </form>
-							
-					  </div>
-                 					 </div>
-						 	</div>
-               	 		</div>
-            		</div>
+                                                <div class="info">
+                                                    <div class="icon fs--18 text-lightest bg-primary">
+                                                        <i class="fa fa-cutlery"></i>
+                                                    </div>
+
+                                                    <div class="title">
+                                                        <h2 class="h4"><a href="group-home.html"><?php echo $row['rec_title'];?></a></h2>
+                                                        <p><h6><?php echo $row['rec_type'];?></h6></p>
+                                                    </div>
+
+                                                    <div class="desc text-darker">
+                                                        <p><?php echo $row['rec_create_by'];?></p>
+                                                        <p><?php echo $row['first_name'].$row['last_name'];?></p>
+                                                        <p><?php echo $row['rec_date'];?></p>
+                                                        <p><?php echo $row['rec_ingredient'];?></p>
+                                                        <p><?php echo $row['rec_instruction'];?></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Box Item End -->
+                                        </div>
+                                    <?php endforeach;?>
+
+                                     <div class="col-md-4 col-xs-6 col-xxs-12">
+                                        <!-- Box Item Start -->
+                                        <div class="box--item text-center">
+                                            <a href="group-home.html" class="img" data-overlay="0.1">
+                                                <img src="../members/img/recipe800x419.png" alt="">
+                                            </a>
+
+                                            <div class="info">
+                                                <div class="icon fs--18 text-lightest bg-primary">
+                                                    <i class="fa fa-cutlery"></i>
+                                                </div>
+
+                                                <div class="title">
+                                                    <h2 class="h4"><a href="group-home.html">Title of Recipe</a></h2>
+													<p><h6>Recipe Type: xxxxxxxxxxxxxxxx</h6></p>
+                                                </div>
+
+                                                <div class="desc text-darker">
+													<p>Created by: xxxxxxxx xxxxxxxxxxxx</p>
+													<p>Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
+													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;</p>
+													<p>Recipe Ingredients</p>
+													<p>Recipe Instructions</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Box Item End -->
+                                    </div>
+ 
+               </div>
+
+                            <!-- Page Count Start -->
+                            <div class="page--count pt--30">
+                                <label class="ff--primary fs--14 fw--500 text-darker">
+                                    <span>Viewing</span>
+
+                                    <a href="#" class="btn-link"><i class="fa fa-caret-left"></i></a>
+                                    <input type="number" name="page-count" value="01" class="form-control form-sm">
+                                    <a href="#" class="btn-link"><i class="fa fa-caret-right"></i></a>
+
+                                    <span>of 28</span>
+                                </label>
+                            </div>
+                            <!-- Page Count End -->
+                        </div>
+                    </div>
+                    <!-- Main Content End -->
+                </div>
+            </div>
         </section>
         <!-- Page Wrapper End -->
 
@@ -417,7 +424,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="../members/groups-recipes.html">
+                                            <a href="groups-recipes.php">
                                                 <i class="fa fa-folder-o"></i>
                                                 <span class="text">Recipes</span>
                                                 
@@ -493,55 +500,55 @@
                         <div class="recent-active-members--widget style--2">
                             <div class="owl-carousel" data-owl-items="12" data-owl-nav="true" data-owl-speed="1200" data-owl-responsive='{"0": {"items": "3"}, "481": {"items": "6"}, "768": {"items": "8"}, "992": {"items": "12"}}'>
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
                                 </div>
 
                                 <div class="img">
-                                    <a href="member-activity-personal.html"><img src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
+                                    <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
                                 </div>
                             </div>
                         </div>
