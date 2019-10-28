@@ -2,30 +2,382 @@
 session_start();
 require_once '../config/config.php';
 require_once BASE_PATH.'/includes/auth_validate.php';
+if(isset($_POST) && isset($_POST['cat_id']) && $_POST['cat_id'] && $_POST['mode'] == 'add') {
+    $db = getDbInstance();
+    $log_user_id = $_SESSION['user_id'];
+    $data_to_db = array();
+    $data_to_db['cat_id'] = $_POST['cat_id'];
+    $data_to_db['note_date'] = $_POST['note_date'];
+    $media_type = $_POST['note_media'];
+    if($media_type == 'text' && isset($_POST['note_value'])){
+        $data_to_db['note_value'] = $_POST['note_value'];
+        $data_to_db['note_media'] = $_POST['note_media'];
+        $data_to_db['user_id'] = $log_user_id;
+        $last_id = $db->insert('tbl_notes', $data_to_db);
 
-if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
+        if ($last_id)
+        {
+            $db = getDbInstance();
+            $query = 'SELECT *
+    FROM tbl_notes
+    LEFT JOIN (
+      SELECT 
+           tbl_categories.id AS categoryId,
+           tbl_categories.cat_name AS cat_name
+	FROM tbl_categories
+       ) categories ON tbl_notes.cat_id = categories.categoryId
+    LEFT JOIN (
+       SELECT 
+           tbl_users.id AS userid,
+           tbl_users.first_name AS first_name,
+           tbl_users.last_name AS last_name
+      FROM tbl_users
+     ) users ON tbl_notes.user_id = users.userid;';
+            $rows = $db->rawQuery($query);
+        }
+        else
+        {
+            $_SESSION['failure'] = 'Insert failed!';
+        }
+    } else if($media_type == 'photo' && isset($_FILES["note_photo"]["name"])) {
+        $target_dir = "./uploads/".$_SESSION['user_id']."/notes/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);  //create directory if not exist
+        }
+        $target_file = $target_dir . basename($_FILES["note_photo"]["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["note_photo"]["tmp_name"]);
+        if($check !== false) {
+//                echo "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+//                echo "File is not an image.";
+            $uploadOk = 0;
+        }
+        // Check if file already exists
+        if (file_exists($target_file)) {
+//            echo "Sorry, file already exists.";
+            $_SESSION['failure'] = "Sorry, file already exists.";
+            $uploadOk = 0;
+        }
+        // Check file size
+        if ($_FILES["note_photo"]["size"] > 500000) {
+//            echo "Sorry, your file is too large.";
+            $_SESSION['failure'] = "Sorry, your file is too large.";
+            $uploadOk = 0;
+        }
+//         Allow certain file formats
+        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+            && $imageFileType != "gif" ) {
+//            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $_SESSION['failure'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $uploadOk = 0;
+        }
+        // Check if $uploadOk is set to 0 by an failure
+        if ($uploadOk == 0) {
+//            echo "Sorry, your file was not uploaded.";
+//            $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+        // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["note_photo"]["tmp_name"], $target_file)) {
+//                echo "The file ". basename( $_FILES["note_photo"]["name"]). " has been uploaded.";
+                $data_to_db['note_value'] = $target_file;
+                $data_to_db['note_media'] = $_POST['note_media'];
+                $data_to_db['user_id'] = $log_user_id;
+                $last_id = $db->insert('tbl_notes', $data_to_db);
+
+                if ($last_id)
+                {
+                    $_SESSION['success'] = 'Successfully uploaded';
+                }
+                else
+                {
+                    $_SESSION['failure'] = 'Insert failed!';
+                }
+            } else {
+//                echo "Sorry, there was an failure uploading your file.";
+                $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+            }
+        }
+        $db = getDbInstance();
+        $query = 'SELECT *
+    FROM tbl_notes
+    LEFT JOIN (
+      SELECT 
+           tbl_categories.id AS categoryId,
+           tbl_categories.cat_name AS cat_name
+	FROM tbl_categories
+       ) categories ON tbl_notes.cat_id = categories.categoryId
+    LEFT JOIN (
+       SELECT 
+           tbl_users.id AS userid,
+           tbl_users.first_name AS first_name,
+           tbl_users.last_name AS last_name
+      FROM tbl_users
+     ) users ON tbl_notes.user_id = users.userid;';
+        $rows = $db->rawQuery($query);
+    } else if($media_type == 'video' && isset($_POST['note_video'])) {
+        $data_to_db['note_value'] = $_POST['note_video'];
+        $data_to_db['note_media'] = $_POST['note_media'];
+        $data_to_db['user_id'] = $log_user_id;
+        $last_id = $db->insert('tbl_notes', $data_to_db);
+
+        if ($last_id)
+        {
+            $db = getDbInstance();
+            $query = 'SELECT *
+    FROM tbl_notes
+    LEFT JOIN (
+      SELECT 
+           tbl_categories.id AS categoryId,
+           tbl_categories.cat_name AS cat_name
+	FROM tbl_categories
+       ) categories ON tbl_notes.cat_id = categories.categoryId
+    LEFT JOIN (
+       SELECT 
+           tbl_users.id AS userid,
+           tbl_users.first_name AS first_name,
+           tbl_users.last_name AS last_name
+      FROM tbl_users
+     ) users ON tbl_notes.user_id = users.userid;';
+            $rows = $db->rawQuery($query);
+        }
+        else
+        {
+            $_SESSION['failure'] = 'Insert failed!';
+        }
+    }
+
+} else if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
     $db = getDbInstance();
     $view_date = $_POST['view_date'];
 
     $view_cat = $_POST['view_category'];
-    $db->join('tbl_users', 'tbl_notes.user_id = tbl_users.id')->join('tbl_categories','tbl_notes.cat_id = tbl_categories.id');
-    $db->where('cat_id', $view_cat);
+
+    $query = 'SELECT *
+    FROM tbl_notes
+    LEFT JOIN (
+      SELECT 
+           tbl_categories.id AS categoryId,
+           tbl_categories.cat_name AS cat_name
+	FROM tbl_categories
+       ) categories ON tbl_notes.cat_id = categories.categoryId
+    LEFT JOIN (
+       SELECT 
+           tbl_users.id AS userid,
+           tbl_users.first_name AS first_name,
+           tbl_users.last_name AS last_name
+      FROM tbl_users
+     ) users ON tbl_notes.user_id = users.userid';
+
     if($view_date == 'today') {
         $view_date = date('Y-m-d');
-        $db->where('note_date', $view_date);
+        $query .= ' WHERE cat_id = '.$view_cat.' AND note_date = '.$view_date;
     } else {
         $view_date = date('Y-m-d');
-        $db->where('note_date', $view_date, '!=');
+        $query .= ' WHERE cat_id = '.$view_cat.' AND note_date != '.$view_date;
     }
 
-    $db->where('user_id', $_SESSION['user_id']);
+    $rows = $db->rawQuery($query);
 
-    $rows = $db->get('tbl_notes');
+} else if(isset($_POST) && isset($_POST['update_date']) && $_POST['update_date']) {
+    $db = getDbInstance();
+    $update_date = $_POST['update_date'];
+
+    $update_cat = $_POST['update_category'];
+
+    $query = 'SELECT *
+    FROM tbl_notes
+    LEFT JOIN (
+      SELECT 
+           tbl_categories.id AS categoryId,
+           tbl_categories.cat_name AS cat_name
+	FROM tbl_categories
+       ) categories ON tbl_notes.cat_id = categories.categoryId
+    LEFT JOIN (
+       SELECT 
+           tbl_users.id AS userid,
+           tbl_users.first_name AS first_name,
+           tbl_users.last_name AS last_name
+      FROM tbl_users
+     ) users ON tbl_notes.user_id = users.userid';
+
+    if($update_date == 'today') {
+        $update_date = date('Y-m-d');
+        $query .= ' WHERE cat_id = '.$update_cat.' AND note_date = '.$update_date;
+    } else {
+        $update_date = date('Y-m-d');
+        $query .= ' WHERE cat_id = '.$update_cat.' AND note_date != '.$update_date;
+    }
+
+    $rows = $db->rawQuery($query);
+
+} else if(isset($_POST) && isset($_POST['mode']) && isset($_POST['note_id']) && $_POST['note_id'] != '' && $_POST['mode'] == 'edit') {
+    $media_type = $_POST['note_media'];
+    if($media_type == 'text' && isset($_POST['note_value'])){
+        $data_to_db = array();
+        $data_to_db['note_value'] = $_POST['note_value'];
+        $db = getDbInstance();
+        $db->where('id', $_POST['note_id']);
+        $last_id = $db->update('tbl_notes', $data_to_db);
+
+        if ($last_id)
+        {
+            $db = getDbInstance();
+            $query = 'SELECT *
+    FROM tbl_notes
+    LEFT JOIN (
+      SELECT 
+           tbl_categories.id AS categoryId,
+           tbl_categories.cat_name AS cat_name
+	FROM tbl_categories
+       ) categories ON tbl_notes.cat_id = categories.categoryId
+    LEFT JOIN (
+       SELECT 
+           tbl_users.id AS userid,
+           tbl_users.first_name AS first_name,
+           tbl_users.last_name AS last_name
+      FROM tbl_users
+     ) users ON tbl_notes.user_id = users.userid;';
+            $rows = $db->rawQuery($query);
+        }
+        else
+        {
+            $_SESSION['failure'] = 'Update failed!';
+        }
+    } else if($media_type == 'photo' && isset($_FILES["note_photo"]["name"])) {
+        $target_dir = "./uploads/".$_SESSION['user_id']."/notes/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);  //create directory if not exist
+        }
+        $target_file = $target_dir . basename($_FILES["note_photo"]["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["note_photo"]["tmp_name"]);
+        if($check !== false) {
+//                echo "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+//                echo "File is not an image.";
+            $uploadOk = 0;
+        }
+        // Check if file already exists
+        if (file_exists($target_file)) {
+//            echo "Sorry, file already exists.";
+            $_SESSION['failure'] = "Sorry, file already exists.";
+            $uploadOk = 0;
+        }
+        // Check file size
+        if ($_FILES["note_photo"]["size"] > 500000) {
+//            echo "Sorry, your file is too large.";
+            $_SESSION['failure'] = "Sorry, your file is too large.";
+            $uploadOk = 0;
+        }
+//         Allow certain file formats
+        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+            && $imageFileType != "gif" ) {
+//            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $_SESSION['failure'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $uploadOk = 0;
+        }
+        // Check if $uploadOk is set to 0 by an failure
+        if ($uploadOk == 0) {
+//            echo "Sorry, your file was not uploaded.";
+//            $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+            // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["note_photo"]["tmp_name"], $target_file)) {
+//                echo "The file ". basename( $_FILES["note_photo"]["name"]). " has been uploaded.";
+                $data_to_db = array();
+                $data_to_db['note_value'] = $target_file;
+                $db = getDbInstance();
+                $db->where('id', $_POST['note_id']);
+                $last_id = $db->update('tbl_notes', $data_to_db);
+
+                if ($last_id)
+                {
+                    $_SESSION['success'] = 'Successfully uploaded';
+                }
+                else
+                {
+                    $_SESSION['failure'] = 'Insert failed!';
+                }
+            } else {
+//                echo "Sorry, there was an failure uploading your file.";
+                $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+            }
+        }
+        $db = getDbInstance();
+        $query = 'SELECT *
+    FROM tbl_notes
+    LEFT JOIN (
+      SELECT 
+           tbl_categories.id AS categoryId,
+           tbl_categories.cat_name AS cat_name
+	FROM tbl_categories
+       ) categories ON tbl_notes.cat_id = categories.categoryId
+    LEFT JOIN (
+       SELECT 
+           tbl_users.id AS userid,
+           tbl_users.first_name AS first_name,
+           tbl_users.last_name AS last_name
+      FROM tbl_users
+     ) users ON tbl_notes.user_id = users.userid;';
+        $rows = $db->rawQuery($query);
+    } else if($media_type == 'video' && isset($_POST['note_video'])) {
+        $db = getDbInstance();
+        $data_to_db = array();
+        $data_to_db['note_value'] = $_POST['note_video'];
+        $db->where('id', $_POST['note_id']);
+        $last_id = $db->update('tbl_notes', $data_to_db);
+
+        if ($last_id)
+        {
+            $db = getDbInstance();
+            $query = 'SELECT *
+    FROM tbl_notes
+    LEFT JOIN (
+      SELECT 
+           tbl_categories.id AS categoryId,
+           tbl_categories.cat_name AS cat_name
+	FROM tbl_categories
+       ) categories ON tbl_notes.cat_id = categories.categoryId
+    LEFT JOIN (
+       SELECT 
+           tbl_users.id AS userid,
+           tbl_users.first_name AS first_name,
+           tbl_users.last_name AS last_name
+      FROM tbl_users
+     ) users ON tbl_notes.user_id = users.userid;';
+            $rows = $db->rawQuery($query);
+        }
+        else
+        {
+            $_SESSION['failure'] = 'Insert failed!';
+        }
+    }
 
 } else {
     $db = getDbInstance();
-    $db->join('tbl_users', 'tbl_notes.user_id = tbl_users.id')->join('tbl_categories','tbl_notes.cat_id = tbl_categories.id');
-    $rows = $db->get('tbl_notes');
+    $query = 'SELECT *
+    FROM tbl_notes
+    LEFT JOIN (
+      SELECT 
+           tbl_categories.id AS categoryId,
+           tbl_categories.cat_name AS cat_name
+	FROM tbl_categories
+       ) categories ON tbl_notes.cat_id = categories.categoryId
+    LEFT JOIN (
+       SELECT 
+           tbl_users.id AS userid,
+           tbl_users.first_name AS first_name,
+           tbl_users.last_name AS last_name
+      FROM tbl_users
+     ) users ON tbl_notes.user_id = users.userid;';
+    $rows = $db->rawQuery($query);
 }
 
 ?>
@@ -216,31 +568,13 @@ if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
                                     <h2>Your Collection of Notes</h2>
                                 </div>
 
-                               <!-- <div class="filter--options float--right">
-                                    <label>
-                                        <span class="fs--14 ff--primary fw--500 text-darker">Show By :</span>
-
-                                        <select name="activityfilter" class="form-control form-sm"
-                                            data-trigger="selectmenu">
-                                            <option value="everything" selected>— Everything —</option>
-                                            <option value="new-members">New Members</option>
-                                            <option value="profile-updates">Profile Updates</option>
-                                            <option value="updates">Updates</option>
-                                            <option value="friendships">Friendships</option>
-                                            <option value="new-groups">New Groups</option>
-                                            <option value="group-memberships">Group Memberships</option>
-                                            <option value="group-updates">Group Updates</option>
-                                            <option value="topics">Topics</option>
-                                            <option value="replies">Replies</option>
-                                        </select>
-                                    </label>
-                                </div>-->
                             </div>
                             <!-- Filter Nav End -->
                             <h4>**Hari, this info will need to be auto-populated by the note activity and the activity
                                 in the various groups, etc. The activity items below are directly from the template to
                                 show some examples. One of us will need to remove this content before production.**</h4>
                             <!-- Activity List Start -->
+                            <?php include BASE_PATH . '/includes/flash_messages.php'; ?>
                             <div class="activity--list">
                                 <!-- Activity Items Start -->
                                 <ul class="activity--items nav"> 
@@ -269,8 +603,8 @@ if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
 
                                                 <div class="activity--info fs--14">
                                                     <div class="activity--header">
-                                                        <p><a href="member-activity-personal.php?user_id=<?php echo $_SESSION['user_id']?>"><?php echo $row['first_name'].$row['last_name']?></a> posted
-                                                            an Note on <?php echo $row['cat_name']?> </p>
+                                                        <p><a href="member-activity-personal.php?user=<?php echo $_SESSION['user_id']?>"><?php echo $row['first_name'].$row['last_name']?></a> posted
+                                                            an <?php echo $row['note_media'];?> on <?php echo $row['cat_name']?> </p>
                                                     </div>
 
                                                     <div class="activity--meta fs--12">
@@ -278,9 +612,18 @@ if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
                                                     </div>
 
                                                     <div class="activity--content">
-                                                        <p>It is a long established fact that a reader will be distracted by
-                                                            the readable content of a page when looking at its layout. The
-                                                            point of using Lorem Ipsum.</p>
+                                                        <?php if ($row['note_media'] == 'text'):?>
+                                                            <p id="note_text_edit"><?php echo $row['note_value']?></p>
+                                                            <input type="button" id="<?php echo $row['id'];?>_note_<?php echo $row['note_media'];?>" style="display: none;" class="btn btn-primary note_edit pull-right" value="Edit">
+                                                        <?php elseif ($row['note_media'] == 'photo'):?>
+                                                            <img id="note_photo_edit" src="<?php echo $row['note_value']; ?>" style="padding-bottom: 10px;">
+                                                            <input type="button" id="<?php echo $row['id'];?>_note_<?php echo $row['note_media'];?>" style="display: none;" class="btn btn-primary note_edit pull-right" value="Edit">
+                                                        <?php elseif ($row['note_media'] == 'video'):?>
+                                                            <iframe id="note_video_edit" width="100%" height="100%"
+                                                                    src="<?php echo $row['note_value']?>" style="padding-bottom: 10px;">
+                                                            </iframe>
+                                                            <input type="button" id="<?php echo $row['id'];?>_note_<?php echo $row['note_media'];?>" style="display: none;" class="btn btn-primary note_edit pull-right" value="Edit">
+                                                        <?php endif;?>
                                                     </div>
                                                 </div>
                                             </div>
@@ -345,18 +688,20 @@ if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
                                                     <select name="multimedia" class="form-control form-sm multimedia"
                                                         data-trigger="selectmenu">
                                                         <option value="addmedia">Add Comment, Photo or Video</option>
-                                                        <option value="addtext">Add Text</option>
-                                                        <option value="addphoto">Add a Photo</option>
-                                                        <option value="addvideo">Add a Video Link</option>
+                                                        <option value="text">Add Text</option>
+                                                        <option value="photo">Add a Photo</option>
+                                                        <option value="video">Add a Video Link</option>
                                                     </select>
                                                 </label>
+                                                <br/>
                                             </div>
                                         </div>
                                         <div class="col-xs-12">
                                             <button type="submit" class="btn btn-primary activity-note-add">Save</button>
-                                            <button type="cancel" class="btn btn-primary">Cancel</button>
+                                            <button type="button" class="btn btn-primary add_cancel_button">Cancel</button>
                                         </div>
                                 </form>
+
                             </div>
                             <!-- Buddy Finder Widget End -->
                         </div>
@@ -412,7 +757,7 @@ if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
                                         </div>
                                         <div class="col-xs-12">
                                             <button type="submit" class="btn btn-primary view_note_submit">Search</button>
-                                            <button type="cancel" class="btn btn-primary">Cancel</button>
+                                            <button type="button" class="btn btn-primary view_cancel_button">Cancel</button>
                                         </div>
                                     </div>
                                 </form>
@@ -426,12 +771,12 @@ if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
                             <h2 class="h6 fw--700 widget--title">Update a Note</h2>
                             <!-- Text Widget Start -->
                             <div class="buddy-finder--widget">
-                                <form action="#">
+                                <form action="#" method="post" id="update_note_form">
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="form-group">
                                                 <label>
-                                                    <select name="date" class="form-control form-sm"
+                                                    <select name="update_date" class="form-control form-sm"
                                                         data-trigger="selectmenu">
                                                         <option value="date">Select a Date</option>
                                                         <option value="today">Today</option>
@@ -444,21 +789,21 @@ if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
                                         <div class="col-xs-12">
                                             <div class="form-group">
                                                 <label>
-                                                    <select name="category" class="form-control form-sm"
+                                                    <select name="update_category" class="form-control form-sm"
                                                         data-trigger="selectmenu">
                                                         <option value="category">*Select a Category</option>
-                                                        <option value="mystory">My Story</option>
-                                                        <option value="mymessage">My Message from the Heart</option>
-                                                        <option value="mylikes">My Likes and Dislikes</option>
-                                                        <option value="myhobbies">My Hobbies</option>
-                                                        <option value="mysports">My Sports</option>
-                                                        <option value="myfunfacts">My Fun Facts</option>
-                                                        <option value="myadventures">My Adventures</option>
-                                                        <option value="mytestimonies">My Testimonies</option>
-                                                        <option value="myeducation">My Education</option>
-                                                        <option value="myaffiliations">My Affiliations</option>
-                                                        <option value="mythoughts   ">My Thoughts</option>
-                                                        <option value="othernotes">Other Notes</option>
+                                                        <option value="1">My Story</option>
+                                                        <option value="2">My Message from the Heart</option>
+                                                        <option value="3">My Likes and Dislikes</option>
+                                                        <option value="4">My Hobbies</option>
+                                                        <option value="5">My Sports</option>
+                                                        <option value="6">My Fun Facts</option>
+                                                        <option value="7">My Adventures</option>
+                                                        <option value="8">My Testimonies</option>
+                                                        <option value="9">My Education</option>
+                                                        <option value="10">My Affiliations</option>
+                                                        <option value="11">My Thoughts</option>
+                                                        <option value="12">Other Notes</option>
 
                                                     </select>
                                                 </label>
@@ -468,8 +813,8 @@ if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
 
                                         </div>
                                         <div class="col-xs-12">
-                                            <button type="post" class="btn btn-primary">Search</button>
-                                            <button type="cancel" class="btn btn-primary">Cancel</button>
+                                            <button type="submit" class="btn btn-primary update_note_submit">Search</button>
+                                            <button type="button" class="btn btn-primary update_cancel_button">Cancel</button>
                                         </div>
                                     </div>
                                 </form>
@@ -490,8 +835,9 @@ if(isset($_POST) && isset($_POST['view_date']) && $_POST['view_date']) {
                 </div>
                 <!-- Main Sidebar End -->
             </div>
-    </div>
-    </section>
+            <?php include BASE_PATH . '/members/forms/note_add_modal.php';?>
+        </div>
+        </section>
     <!-- Page Wrapper End -->
 
     <!-- Footer Section Start -->

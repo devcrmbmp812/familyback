@@ -3,8 +3,8 @@ session_start();
 require_once '../config/config.php';
 require_once BASE_PATH.'/includes/auth_validate.php';
 $db = getDbInstance();
-$db->join('tbl_users', 'tbl_users.id = tbl_recipes.rec_submit_by');
-$rows = $db->get('tbl_recipes');
+$db->join('tbl_recipes', 'tbl_users.id = tbl_recipes.rec_submit_by');
+$rows = $db->get('tbl_users');
 ?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -267,7 +267,7 @@ $rows = $db->get('tbl_recipes');
                                         <div class="col-md-4 col-xs-6 col-xxs-12">
                                             <!-- Box Item Start -->
                                             <div class="box--item text-center">
-                                                <a href="group-home.html" class="img" data-overlay="0.1">
+                                                <a href="groups-recipes-large.php?recipe=<?php echo $row['id'];?>" class="img" data-overlay="0.1">
                                                     <img src="../members/img/recipe800x419.png" alt="">
                                                 </a>
 
@@ -277,7 +277,7 @@ $rows = $db->get('tbl_recipes');
                                                     </div>
 
                                                     <div class="title">
-                                                        <h2 class="h4"><a href="group-home.html"><?php echo $row['rec_title'];?></a></h2>
+                                                        <h2 class="h4"><a href="groups-recipes-large.php?recipe=<?php echo $row['id'];?>"><?php echo $row['rec_title'];?></a></h2>
                                                         <p><h6><?php echo $row['rec_type'];?></h6></p>
                                                     </div>
 
@@ -293,36 +293,6 @@ $rows = $db->get('tbl_recipes');
                                             <!-- Box Item End -->
                                         </div>
                                     <?php endforeach;?>
-
-                                     <div class="col-md-4 col-xs-6 col-xxs-12">
-                                        <!-- Box Item Start -->
-                                        <div class="box--item text-center">
-                                            <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="../members/img/recipe800x419.png" alt="">
-                                            </a>
-
-                                            <div class="info">
-                                                <div class="icon fs--18 text-lightest bg-primary">
-                                                    <i class="fa fa-cutlery"></i>
-                                                </div>
-
-                                                <div class="title">
-                                                    <h2 class="h4"><a href="group-home.html">Title of Recipe</a></h2>
-													<p><h6>Recipe Type: xxxxxxxxxxxxxxxx</h6></p>
-                                                </div>
-
-                                                <div class="desc text-darker">
-													<p>Created by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
-													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;</p>
-													<p>Recipe Ingredients</p>
-													<p>Recipe Instructions</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Box Item End -->
-                                    </div>
- 
                </div>
 
                             <!-- Page Count Start -->

@@ -1,5 +1,23 @@
 (function ($) {
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#note_photo_id').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     $('.activity-note-add').click(function (e) {
+
+        $('#myLargeModalLabel').html('Add New Note');
+
+        $('.note-add-modal input[name="mode"]').val('add');
+
 
         e.preventDefault();
 
@@ -35,53 +53,127 @@
         } else {
             $('#add_note_form input[name="multimedia"]').parent().parent().css("border","1px solid white");//more efficient
             add_note_media_val = true;
-        }
-        if(add_date_val && add_note_media_val && add_note_cat_val) {
-            $.ajax({
-                type: "POST",
-                url: '/members/ajax_render/ajax_note.php',
-                data: {cat_id: category, note_date: note_add_date, note_media: media},
-                success: function(data){
-                    var object_response = JSON.parse(data);
-                    console.log(object_response);
-                    if(object_response.message == "true") {
-                        var li_html = "<li>\n" +
-                            "                                        <!-- Activity Item Start -->\n" +
-                            "                                        <div class=\"activity--item\">\n" +
-                            "                                            <div class=\"activity--avatar\">\n" +
-                            "                                                <a href=\"member-activity-personal.php\">\n" +
-                            "                                                    <img src=\"img/activity-img/avatar-08.jpg\" alt=\"\">\n" +
-                            "                                                </a>\n" +
-                            "                                            </div>\n" +
-                            "\n" +
-                            "                                            <div class=\"activity--info fs--14\">\n" +
-                            "                                                <div class=\"activity--header\">\n" +
-                            "                                                    <p><a href=\"member-activity-personal.php\">" +
-                                                                                    object_response.user_name +
-                                                                                            "</a> posted\n" +
-                            "                                                        an Note on " + object_response.category + "</p>" +
-                            "                                                </div>\n" +
-                            "\n" +
-                            "                                                <div class=\"activity--meta fs--12\">\n" +
-                            "                                                    <p><i class=\"fa mr--8 fa-clock-o\"></i>" + object_response.note_date + "</p>\n" +
-                            "                                                </div>\n" +
-                            "\n" +
-                            "                                                <div class=\"activity--content\">\n" +
-                            "                                                    <p>It is a long established fact that a reader will be distracted by\n" +
-                            "                                                        the readable content of a page when looking at its layout. The\n" +
-                            "                                                        point of using Lorem Ipsum.</p>\n" +
-                            "                                                </div>\n" +
-                            "                                            </div>\n" +
-                            "                                        </div>\n" +
-                            "                                        <!-- Activity Item End -->\n" +
-                            "                                    </li>";
-                        $(".activity--items").append(li_html);
-                    }
+            if(media == 'text') {
+                if(add_date_val && add_note_media_val && add_note_cat_val) {
+                    $('.note-add-modal').modal('toggle');
+                    $('.note-add-modal input[name="cat_id"]').val(category);
+                    $('.note-add-modal input[name="note_date"]').val(note_add_date);
+                    $('.note-add-modal input[name="note_media"]').val(media);
+                    $('.note-add-modal input[name="note_value"]').show();
+                    $('.note-add-modal input[name="note_photo"]').hide();
+                    $('.note-add-modal input[name="note_video"]').hide();
+                    $('.note-add-modal #note_photo_id').hide();
+                    // $('.note-add-modal input[name="note_photo"]').show();
+                    // $('.note-add-modal input[name="note_video"]').show();
+                    $('.note-add-modal input[name="note_photo"]').removeAttr("required");
+                    $('.note-add-modal input[name="note_video"]').removeAttr("required");
+                    // $('.note-add-modal input[name="note_video"]').hide();
                 }
-            });
-        }
+            } else if(media == 'photo') {
+                if(add_date_val && add_note_media_val && add_note_cat_val) {
+                    $('.note-add-modal').modal('toggle');
+                    $('.note-add-modal input[name="cat_id"]').val(category);
+                    $('.note-add-modal input[name="note_date"]').val(note_add_date);
+                    $('.note-add-modal input[name="note_media"]').val(media);
+                    $('.note-add-modal input[name="note_value"]').hide();
+                    $('.note-add-modal input[name="note_photo"]').show();
+                    $('.note-add-modal input[name="note_video"]').hide();
 
-        // $('.note-add-modal').modal('toggle');
+                    $('.note-add-modal #note_photo_id').show();
+
+                    $('.note-add-modal input[name="note_value"]').removeAttr("required");
+                    $('.note-add-modal input[name="note_video"]').removeAttr("required");
+                }
+            } else if(media == 'video') {
+                if(add_date_val && add_note_media_val && add_note_cat_val) {
+                    $('.note-add-modal').modal('toggle');
+                    $('.note-add-modal input[name="cat_id"]').val(category);
+                    $('.note-add-modal input[name="note_date"]').val(note_add_date);
+                    $('.note-add-modal input[name="note_media"]').val(media);
+                    $('.note-add-modal input[name="note_value"]').hide();
+                    $('.note-add-modal input[name="note_photo"]').hide();
+                    $('.note-add-modal input[name="note_video"]').show();
+
+                    $('.note-add-modal #note_photo_id').hide();
+
+                    $('.note-add-modal input[name="note_value"]').removeAttr("required");
+                    $('.note-add-modal input[name="note_photo"]').removeAttr("required");
+                }
+            }
+        }
+    });
+
+    if (localStorage.getItem("edit") === null) {
+        $('.note_edit').hide();
+    } else if(localStorage.getItem("edit") === 'true') {
+        $('.note_edit').show();
+        localStorage.removeItem("edit");
+    }
+
+    $('.note_edit').click(function() {
+
+        $('#myLargeModalLabel').html('Update Note');
+        var id_media = $(this).attr("id");
+        var id = id_media.split("_")[0];
+        var media = id_media.split("_")[2];
+
+        console.log(id);
+        console.log(media);
+        if(media == 'text') {
+            $('.note-add-modal').modal('toggle');
+            $('.note-add-modal input[name="note_value"]').show();
+
+            var note_value = $(this).parent().children('p').html();
+            $('.note-add-modal input[name="note_value"]').val(note_value);
+            $('.note-add-modal input[name="note_media"]').val('text');
+            $('.note-add-modal input[name="note_id"]').val(id);
+            $('.note-add-modal input[name="mode"]').val('edit');
+
+            $('.note-add-modal input[name="note_photo"]').hide();
+            $('.note-add-modal input[name="note_video"]').hide();
+
+            $('.note-add-modal input[name="note_photo"]').removeAttr("required");
+            $('.note-add-modal input[name="note_video"]').removeAttr("required");
+            $('.note-add-modal #note_photo_id').hide();
+        } else if(media == 'photo') {
+            $('.note-add-modal').modal('toggle');
+            $('.note-add-modal input[name="note_photo"]').show();
+            $('.note-add-modal #note_photo_id').show();
+
+            var note_value = $(this).parent().children('img').attr('src');
+            $('#note_photo_id').attr('src', note_value);
+            $('.note-add-modal input[name="note_media"]').val('photo');
+            $('.note-add-modal input[name="note_id"]').val(id);
+            $('.note-add-modal input[name="mode"]').val('edit');
+
+            $('.note-add-modal input[name="note_value"]').hide();
+            $('.note-add-modal input[name="note_video"]').hide();
+            $('.note-add-modal input[name="note_value"]').removeAttr("required");
+            $('.note-add-modal input[name="note_video"]').removeAttr("required");
+        } else if(media == 'video') {
+            $('.note-add-modal').modal('toggle');
+            $('.note-add-modal input[name="note_video"]').show();
+            var note_value = $(this).parent().children('iframe').attr('src');
+            $('.note-add-modal input[name="note_video"]').val(note_value);
+            $('.note-add-modal input[name="note_media"]').val('video');
+            $('.note-add-modal input[name="note_id"]').val(id);
+            $('.note-add-modal input[name="mode"]').val('edit');
+
+            $('.note-add-modal input[name="note_value"]').hide();
+            $('.note-add-modal input[name="note_photo"]').hide();
+            $('.note-add-modal #note_photo_id').hide();
+
+            $('.note-add-modal input[name="note_value"]').removeAttr("required");
+            $('.note-add-modal input[name="note_photo"]').removeAttr("required");
+        }
+    });
+
+    $('.add_cancel_button').click(function () {
+
+    });
+
+    $("#fileToUpload").change(function() {
+        readURL(this);
     });
 
     $('.view_note_submit').click(function(e){
@@ -115,4 +207,35 @@
         }
     });
 
+    $('.update_note_submit').click(function (e) {
+        e.preventDefault();
+
+        var update_date_val = true;
+        var update_cat_val = true;
+
+        var update_date = $('#update_note_form ul[data-select-name="update_date"] li.selected').attr('data-option-value');
+        var update_cat = $('#update_note_form ul[data-select-name="update_category"] li.selected').attr('data-option-value');
+
+        console.log("update_date", update_date);
+        console.log("update_cat", update_cat);
+        if(update_date == 'date') {
+            $('#update_note_form ul[data-select-name="update_date"] li.selected').parent().parent().css("border", "1px solid red");
+            update_date_val = false;
+        } else {
+            $('#update_note_form ul[data-select-name="update_date"] li.selected').parent().parent().css("border", "1px solid white");
+            update_date_val = true;
+        }
+
+        if( update_cat == 'category') {
+            $('#update_note_form ul[data-select-name="update_category"] li.selected').parent().parent().css("border", "1px solid red");
+            update_cat_val = false;
+        } else {
+            $('#update_note_form ul[data-select-name="update_category"] li.selected').parent().parent().css("border", "1px solid white");
+            update_cat_val = true;
+        }
+        if(update_date_val && update_cat_val) {
+            window.localStorage.setItem('edit', 'true');
+            $('#update_note_form').submit();
+        }
+    });
 })(jQuery);

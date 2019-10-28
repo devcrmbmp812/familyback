@@ -22,6 +22,58 @@ if(isset($_POST) && isset($_POST['rec_date']) && $_POST['rec_date'] != '') {
             }
         }
     }
+    if(isset($_POST) && isset($_FILES["upfile"]["name"])) {
+        $target_dir = "./uploads/".$_SESSION['user_id']."/"."recipes/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);  //create directory if not exist
+        }
+        $target_file = $target_dir . basename($_FILES["upfile"]["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["upfile"]["tmp_name"]);
+        if($check !== false) {
+//                echo "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+//                echo "File is not an image.";
+            $uploadOk = 0;
+        }
+        // Check if file already exists
+        if (file_exists($target_file)) {
+//            echo "Sorry, file already exists.";
+            $_SESSION['failure'] = "Sorry, file already exists.";
+            $uploadOk = 0;
+        }
+        // Check file size
+        if ($_FILES["upfile"]["size"] > 500000) {
+//            echo "Sorry, your file is too large.";
+            $_SESSION['failure'] = "Sorry, your file is too large.";
+            $uploadOk = 0;
+        }
+//         Allow certain file formats
+        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+            && $imageFileType != "gif" ) {
+//            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $_SESSION['failure'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $uploadOk = 0;
+        }
+        // Check if $uploadOk is set to 0 by an failure
+        if ($uploadOk == 0) {
+//            echo "Sorry, your file was not uploaded.";
+//            $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+            // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["upfile"]["tmp_name"], $target_file)) {
+//                echo "The file ". basename( $_FILES["upfile"]["name"]). " has been uploaded.";
+                $data_to_db['rec_photo'] = $target_file;
+
+            } else {
+//                echo "Sorry, there was an failure uploading your file.";
+                $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+            }
+        }
+    }
     $db = getDbInstance();
     $last_id = $db->insert('tbl_recipes', $data_to_db);
 
@@ -37,92 +89,6 @@ if(isset($_POST) && isset($_POST['rec_date']) && $_POST['rec_date'] != '') {
         $_SESSION['failure'] = 'Inert DB error'.$db->getLastError();
     }
 }
-
-//if(isset($_POST) && isset($_POST['upfile']) && $_POST['upfile'] != '') {
-//    try {
-//        if (!isset($_FILES['upfile']['error']) ||is_array($_FILES['upfile']['error'])) {
-//            throw new RuntimeException('Invalid parameters.');
-//        }
-//
-//        // Check $_FILES['upfile']['error'] value.
-//        switch ($_FILES['upfile']['error']) {
-//            case UPLOAD_ERR_OK:
-//                break;
-//            case UPLOAD_ERR_NO_FILE:
-//                throw new RuntimeException('No file sent.');
-//            case UPLOAD_ERR_INI_SIZE:
-//            case UPLOAD_ERR_FORM_SIZE:
-//                throw new RuntimeException('Exceeded filesize limit.');
-//            default:
-//                throw new RuntimeException('Unknown errors.');
-//        }
-//
-//        // You should also check filesize here.
-//        if ($_FILES['upfile']['size'] > 1000000) {
-//            throw new RuntimeException('Exceeded filesize limit.');
-//        }
-//
-//        // DO NOT TRUST $_FILES['upfile']['mime'] VALUE !!
-//        // Check MIME Type by yourself.
-//        $finfo = new finfo(FILEINFO_MIME_TYPE);
-//        if (false === $ext = array_search(
-//                $finfo->file($_FILES['upfile']['tmp_name']),
-//                array(
-//                    'jpg' => 'image/jpeg',
-//                    'png' => 'image/png',
-//                    'gif' => 'image/gif',
-//                ),
-//                true
-//            )) {
-//            throw new RuntimeException('Invalid file format.');
-//        }
-//
-//        // get details of the uploaded file
-//        $fileTmpPath = $_FILES['upfile']['tmp_name'];
-//        $fileName = $_FILES['upfile']['name'];
-//        $fileSize = $_FILES['upfile']['size'];
-//        $fileType = $_FILES['upfile']['type'];
-//        $fileNameCmps = explode(".", $fileName);
-//        $fileExtension = strtolower(end($fileNameCmps));
-//
-//        $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
-//
-//        print_r("herellllll");
-//        $allowedfileExtensions = array('jpg', 'gif', 'png');
-//        if (in_array($fileExtension, $allowedfileExtensions)) {
-//            print_r("herellllll");
-//            // directory in which the uploaded file will be moved
-//            $uploadFileDir = '../uploads/';
-//            $dest_path = $uploadFileDir . $newFileName;
-//
-//            if(move_uploaded_file($fileTmpPath, $dest_path))
-//            {
-//                $response = array(
-//                    "status" => "success",
-//                    "error" => false,
-//                    "message" => "File uploaded successfully"
-//                );
-//                echo json_encode($response);
-//            }
-//            else
-//            {
-//                throw new RuntimeException('Failed to move uploaded file.');
-//            }
-//        }
-//
-//
-//
-//    } catch (RuntimeException $e) {
-//        $response = array(
-//            "status" => "error",
-//            "error" => true,
-//            "message" => $e->getMessage()
-//        );
-//        print_r($e->getMessage());
-//    }
-//
-//}
-
 ?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -316,7 +282,7 @@ if(isset($_POST) && isset($_POST['rec_date']) && $_POST['rec_date'] != '') {
                     <div class="main--content col-md-12 pb--60">
                         <div class="main--content-inner">
 		                    <div><h2>Add Your Recipe to the Group</h2></div>
-		                    <form name="recipe-add-form" action="#" method="post">
+		                    <form name="recipe-add-form" action="#" method="post" enctype="multipart/form-data">
 					            <div class="box--items-h">
                                     <div class="row gutter--15 AdjustRow">
                                       <div class="box--item text-center">
@@ -350,12 +316,12 @@ if(isset($_POST) && isset($_POST['rec_date']) && $_POST['rec_date'] != '') {
                                                             <br>
                                                         </label>
 
-<!--                                                    <div class="box--item text-left">-->
-<!--                                                         <div><label><h6>Add a photo of your recipe.&nbsp;&nbsp;&nbsp;</h6>-->
-<!--                                                            <input name="upfile" type="file" class="form-control" id="upfile">-->
-<!--                                                             </label>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
+                                                    <div class="box--item text-left">
+                                                         <div><label><h6>Add a photo of your recipe.&nbsp;&nbsp;&nbsp;</h6>
+                                                            <input name="upfile" type="file" class="form-control" id="upfile">
+                                                             </label>
+                                                        </div>
+                                                    </div>
 
                                                     <div class="box--item text-left textareaw">
                                                           <div><label><h6>Add the recipe ingredients.&nbsp;&nbsp;&nbsp;</h6></label>

@@ -3,9 +3,19 @@ session_start();
 require_once '../config/config.php';
 require_once BASE_PATH.'/includes/auth_validate.php';
 $db = getDbInstance();
-$db->join('tbl_users', 'tbl_notes.user_id = tbl_users.id')->join('tbl_categories','tbl_notes.cat_id = tbl_categories.id');
-$db->where('tbl_notes.user_id', $_GET['user_id']);
-$rows = $db->get('tbl_notes');
+$db->join('tbl_notes', 'tbl_notes.user_id = tbl_users.id')->join('tbl_categories','tbl_notes.cat_id = tbl_categories.id');
+$db->where('tbl_users.id', $_GET['user']);
+$db->orderBy('tbl_notes.id');
+
+$rows = $db->get('tbl_users');
+
+$userdb = getDbInstance();
+$userdb->where('id', $_GET['user']);
+$userrow = $userdb->getOne('tbl_users');
+//echo '<pre>';
+//print_r($rows);
+//echo '</pre>';
+//exit;
 ?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -274,7 +284,7 @@ $rows = $db->get('tbl_notes');
                 </div>
 
                 <div class="cover--user-name">
-                    <h2 class="h3 fw--600">Eileen K. Ruiz</h2>
+                    <h2 class="h3 fw--600"><?php echo $userrow['first_name'].' '. $userrow['last_name'];?></h2>
                 </div>
 
                 <div class="cover--user-activity">
@@ -355,7 +365,7 @@ $rows = $db->get('tbl_notes');
 
                                                 <div class="activity--info fs--14">
                                                     <div class="activity--header">
-                                                        <p><a href="member-activity-personal.php"><?php echo $row['first_name'].$row['last_name']?></a> posted an Note on <?php echo $row['cat_name']?></p>
+                                                        <p><a href="member-activity-personal.php"><?php echo $row['first_name'].$row['last_name']?></a> posted an <?php echo $row['note_media'];?> on <?php echo $row['cat_name']?></p>
                                                     </div>
 
                                                     <div class="activity--meta fs--12">
@@ -363,232 +373,21 @@ $rows = $db->get('tbl_notes');
                                                     </div>
 
                                                     <div class="activity--content">
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam quo deserunt a suscipit perferendis dicta at eveniet officiis!</p>
+                                                        <?php if ($row['note_media'] == 'text'):?>
+                                                            <p><?php echo $row['note_value']?></p>
+                                                        <?php elseif ($row['note_media'] == 'photo'):?>
+                                                            <img src="<?php echo $row['note_value']; ?>">
+                                                        <?php elseif ($row['note_media'] == 'video'):?>
+                                                            <iframe width="100%" height="100%"
+                                                                    src="<?php echo $row['note_value']?>">
+                                                            </iframe>
+                                                        <?php endif;?>
                                                     </div>
                                                 </div>
                                             </div>
                                             <!-- Activity Item End -->
                                         </li>
                                     <?php endforeach;?>
-                                    <li>
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity--avatar">
-                                                <a href="member-activity-personal.php">
-                                                    <img src="img/activity-img/avatar-01.jpg" alt="">
-                                                </a>
-                                            </div>
-
-                                            <div class="activity--info fs--14">
-                                                <div class="activity--header">
-                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> posted an update</p>
-                                                </div>
-
-                                                <div class="activity--meta fs--12">
-                                                    <p><i class="fa mr--8 fa-clock-o"></i>Yeasterday at 08:20 am</p>
-                                                </div>
-
-                                                <div class="activity--content">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam quo deserunt a suscipit perferendis dicta at eveniet officiis!</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    </li>
-                                    <li>
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity--avatar">
-                                                <a href="member-activity-personal.php">
-                                                    <img src="img/activity-img/avatar-01.jpg" alt="">
-                                                </a>
-                                            </div>
-
-                                            <div class="activity--info fs--14">
-                                                <div class="activity--header">
-                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> posted an update in the group <a href="group-home.html">Crazy Music Lovers</a></p>
-                                                </div>
-
-                                                <div class="activity--meta fs--12">
-                                                    <p><i class="fa mr--8 fa-clock-o"></i>Yeasterday at 08:20 am</p>
-                                                </div>
-
-                                                <div class="activity--content">
-                                                    <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing</p>
-                                                </div>
-
-                                                <div class="activity--action fw--700">
-                                                    <a href="#">See More...</a>
-                                                </div>
-
-                                                <div class="activity--comments fs--12">
-                                                    <ul class="acomment--items nav">
-                                                        <li>
-                                                            <div class="acomment--item clearfix">
-                                                                <div class="acomment--avatar">
-                                                                    <a href="member-activity-personal.php">
-                                                                        <img src="img/activity-img/avatar-04.jpg" alt="">
-                                                                    </a>
-                                                                </div>
-
-                                                                <div class="acomment--info">
-                                                                    <div class="acomment--header">
-                                                                        <p><a href="#">Leticia J. Espinosa</a> Replied</p>
-                                                                    </div>
-
-                                                                    <div class="acomment--meta">
-                                                                        <p><i class="fa mr--8 fa-clock-o"></i>Yeasterday at 08:20 am</p>
-                                                                    </div>
-
-                                                                    <div class="acomment--content">
-                                                                        <p>Well Said!</p>
-                                                                        <p>Love it..... <span style="color: #ec407a;">&hearts; &hearts; &hearts;</span></p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    </li>
-                                    <li>
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity--avatar">
-                                                <a href="member-activity-personal.php">
-                                                    <img src="img/activity-img/avatar-01.jpg" alt="">
-                                                </a>
-                                            </div>
-
-                                            <div class="activity--info fs--14">
-                                                <div class="activity--header">
-                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> and <a href="member-activity-personal.php">Leticia J. Espinosa</a> are now friends</p>
-                                                </div>
-
-                                                <div class="activity--meta fs--12">
-                                                    <p><i class="fa mr--8 fa-clock-o"></i>Yeasterday at 08:20 am</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    </li>
-                                    <li>
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity--avatar">
-                                                <a href="member-activity-personal.php">
-                                                    <img src="img/activity-img/avatar-01.jpg" alt="">
-                                                </a>
-                                            </div>
-
-                                            <div class="activity--info fs--14">
-                                                <div class="activity--header">
-                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> posted an update in the group <a href="group-home.html">Crazy Music Lovers</a></p>
-                                                </div>
-
-                                                <div class="activity--meta fs--12">
-                                                    <p><i class="fa mr--8 fa-clock-o"></i>Yeasterday at 08:20 am</p>
-                                                </div>
-
-                                                <div class="activity--content">
-                                                    <div class="link--embed">
-                                                        <a class="link--url" href="https://www.youtube.com/watch?v=YE7VzlLtp-4" data-trigger="video_popup"></a>
-
-                                                        <div class="link--video">
-                                                            <img src="img/activity-img/link-video-poster.jpg" alt="">
-                                                        </div>
-
-                                                        <div class="link--info fs--12">
-                                                            <div class="link--title">
-                                                                <h4 class="h6">There are many variations of passages of Lorem Ipsum available, but the majority have suffered</h4>
-                                                            </div>
-
-                                                            <div class="link--desc">
-                                                                <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing</p>
-                                                            </div>
-
-                                                            <div class="link--rel ff--primary text-uppercase">
-                                                                <p>www.unknownneonnettle.com</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    </li>
-                                    <li>
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity--avatar">
-                                                <a href="member-activity-personal.php">
-                                                    <img src="img/activity-img/avatar-01.jpg" alt="">
-                                                </a>
-                                            </div>
-
-                                            <div class="activity--info fs--14">
-                                                <div class="activity--header">
-                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> posted an update in the group <a href="group-home.html">Crazy Music Lovers</a></p>
-                                                </div>
-
-                                                <div class="activity--meta fs--12">
-                                                    <p><i class="fa mr--8 fa-clock-o"></i>Yeasterday at 08:20 am</p>
-                                                </div>
-
-                                                <div class="activity--content">
-                                                    <div class="gallery--embed" data-trigger="gallery_popup">
-                                                        <ul class="nav AdjustRow">
-                                                            <li>
-                                                                <a href="img/activity-img/gallery-embed-01.jpg">
-                                                                    <img src="img/activity-img/gallery-embed-01.jpg" alt="">
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="img/activity-img/gallery-embed-02.jpg">
-                                                                    <img src="img/activity-img/gallery-embed-02.jpg" alt="">
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="img/activity-img/gallery-embed-03.jpg">
-                                                                    <img src="img/activity-img/gallery-embed-03.jpg" alt="">
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="img/activity-img/gallery-embed-04.jpg" data-overlay="0.5">
-                                                                    <img src="img/activity-img/gallery-embed-04.jpg" alt="">
-                                                                    <span>24+ More</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    </li>
-                                    <li>
-                                        <!-- Activity Item Start -->
-                                        <div class="activity--item">
-                                            <div class="activity--avatar">
-                                                <a href="member-activity-personal.php">
-                                                    <img src="img/activity-img/avatar-01.jpg" alt="">
-                                                </a>
-                                            </div>
-
-                                            <div class="activity--info fs--14">
-                                                <div class="activity--header">
-                                                    <p><a href="member-activity-personal.php">Eileen K. Ruiz</a> joined the group <a href="group-home.html">Crazy Music Lovers</a></p>
-                                                </div>
-
-                                                <div class="activity--meta fs--12">
-                                                    <p><i class="fa mr--8 fa-clock-o"></i>Yeasterday at 08:20 am</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Activity Item End -->
-                                    </li>
                                 </ul>
                                 <!-- Activity Items End -->
                             </div>

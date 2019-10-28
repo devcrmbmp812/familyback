@@ -1,3 +1,12 @@
+<?php
+session_start();
+require_once '../config/config.php';
+require_once BASE_PATH.'/includes/auth_validate.php';
+$db = getDbInstance();
+$db->join('tbl_recipes', 'tbl_users.id = tbl_recipes.rec_submit_by');
+$db->where('tbl_recipes.id', $_GET['recipe']);
+$row = $db->getOne('tbl_users');
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -222,7 +231,7 @@
                                         <!-- Box Item Start -->
                                         <div class="box--item text-center">
                                             <a href="group-home.html" class="img" data-overlay="0.1">
-                                                <img src="img/group-img/01.jpg" alt="">
+                                                <img src="<?php echo $row['rec_photo'];?>" width="800px" height="418px" alt="">
                                             </a>
 
                                             <div class="info">
@@ -231,20 +240,20 @@
                                                 </div>
 
                                            <div class="title">
-                                                    <h2 class="h2"><a href="group-home.html">Title of Recipe</a></h2>
-													<p><h4>Recipe Type: xxxxxxxxxxxxxxxx</h4></p>
+                                                    <h2 class="h2"><a href="group-home.html"><?php echo $row['rec_title'];?></a></h2>
+													<p><h4>Recipe Type: <?php echo $row['rec_type'];?></h4></p>
                                                 </div>
 
                                                 <div class="desc text-darker">
-													<p>Date: xx/xx/xxxx &nbsp;&nbsp;&nbsp;&nbsp;Created by: xxxxxxxx xxxxxxxxxxxx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Submitted by: xxxxxxxx xxxxxxxxxxxx</p>
+													<p>Date: <?php echo $row['rec_date'];?> &nbsp;&nbsp;&nbsp;&nbsp;Created by: <?php echo $row['rec_create_by'];?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Submitted by: <?php echo $row['first_name'].' '.$row['last_name'];?></p>
 												</div>
 										
 											
 													<p class="float--left"><h4>Recipe Ingredients</h4></p>
-													<p class="float--left"><h6>Same text that populates from the Add a Recipe page and appears on the groups-recipes.html page. Just bigger on the screen.</h6></p>
+													<p class="float--left"><h6><?php echo $row['rec_ingredient'];?></h6></p>
 										
 													<p class="float--left"><h4>Recipe Instructions</h4></p>
-													<p class="float--left"><h6>Same text that populates from the Add a Recipe page and appears on the groups-recipes.html page. Just bigger on the screen.</h6></p>
+													<p class="float--left"><h6><?php echo $row['rec_instruction'];?></h6></p>
                                                 
 					                         </div>
                                         </div>

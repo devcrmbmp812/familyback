@@ -6,44 +6,25 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
-                <form action="" method="POST">
-                    <input type="hidden" name="add_user" value="add_user">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="cat_id" value="cat_id">
+                    <input type="hidden" name="note_date" value="note_date">
+                    <input type="hidden" name="note_media" value="note_media">
+                    <input type="hidden" name="mode" value="add">
+                    <input type="hidden" name="note_id" value="">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="example_input_first_name">First Name:</label>
-                            <input type="text" name="first_name" class="form-control" placeholder="Enter first name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="example_input_last_name">Last Name:</label>
-                            <input type="text" name="last_name" class="form-control" placeholder="Enter last name" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email address:</label>
-                            <input type="email" name="user_email" class="form-control" placeholder="Enter email" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Password:</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Confirm Password:</label>
-                            <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirm Password" required>
-                            <span id='message'></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Phone No:</label>
-                            <input type="tel" name="phone_no" class="form-control" placeholder="Phone number">
-                        </div>
-                        <div class="form-group">
-                            <label>Note:</label>
-                            <input type="text" name="note" class="form-control" placeholder="Note">
+                            <label for="example_input_first_name">Note here:</label>
+                            <input type="text" name="note_value" class="form-control" placeholder="Enter the text" required>
+                            <input type="file" name="note_photo" id="fileToUpload" required>
+                            <img id="note_photo_id" src="#" alt="your image" style="color: green;font: 20px Impact;" />
+                            <input type="text" name="note_video" class="form-control" placeholder="Enter the video link" required>
                         </div>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success pull-right add-new-user">Submit</button>
+                        <button type="submit" class="btn btn-success pull-right add-note-content">Submit</button>
                     </div>
                 </form>
             </div>
