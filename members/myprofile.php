@@ -2,7 +2,6 @@
 session_start();
 require_once '../config/config.php';
 require_once BASE_PATH.'/includes/auth_validate.php';
-include BASE_PATH.'/members/includes/header.php';
 $logged_id = $_SESSION['user_id'];
 $db = getDbInstance();
 $db->where('id', $logged_id);

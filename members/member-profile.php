@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once '../config/config.php';
+
+require_once BASE_PATH.'/includes/auth_validate.php';
+$logged_id = $_SESSION['user_id'];
+$db = getDbInstance();
+$db->where('id', $logged_id);
+$row = $db->getOne('tbl_users');
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -219,7 +229,7 @@
                             <div class="content--nav pb--30">
                                 <ul class="nav ff--primary fs--14 fw--500 bg-lighter">
                                     <!--<li><a href="member-activity-personal.php">Activity</a></li>-->
-                                    <li class="active"><a href="member-profile.html">Profile</a></li>
+                                    <li class="active"><a href="member-profile.php">Profile</a></li>
                                    <!-- <li><a href="member-friends.html">Friends</a></li>
                                     <li><a href="member-groups.html">Groups</a></li>
                                     <li><a href="member-forum-topics.html">Forum</a></li>
@@ -243,11 +253,11 @@
                                         <table class="table">
                                             <tr>
                                                 <th class="fw--700 text-darkest">First Name</th>
-                                                <td><!--<a href="#" class="btn-link">Should be a text box.</a>--><input type="text"></td>
+                                                <td><input type="text" name="first_name" class="form-control" value="<?php echo $row['first_name']?>"></td>
                                             </tr>
                                             <tr>
                                                 <th class="fw--700 text-darkest">Last Name</th>
-                                                <td><input type="text"></td>
+                                                <td><input type="text" name="last_name" class="form-control" value="<?php echo $row['last_name']?>"></td>
                                             </tr>
                                             <tr>
                                                 <th class="fw--700 text-darkest">Date of Birth</th>
@@ -272,7 +282,7 @@
                                         <table class="table">
                                             <tr>
                                                 <th class="fw--700 text-darkest">User ID</th>
-                                                <td><!--<a href="#" class="btn-link">Should be a text box.</a>--><input type="text"></td>
+                                                <td><input type="text" name="user_name" class="form-control" required="required" value="<?php echo $row['user_name']?>"></td>
                                             </tr>
                                             <tr>
                                                 <th class="fw--700 text-darkest">Password</th>

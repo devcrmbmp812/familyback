@@ -104,7 +104,7 @@ require_once BASE_PATH.'/includes/auth_validate.php';
 
                             <ul class="dropdown-menu">
                                 <li class="active">
-                                    <a href="<?php echo BASE_URL;?>/members/myprofile.php"><span>My Profile</span></a></li>
+                                    <a href="<?php echo BASE_URL;?>/members/member-profile.php"><span>My Profile</span></a></li>
                                 <li><a href="<?php echo BASE_URL;?>/members/logout.php"><span>Log out</span></a></li>
                             </ul>
                         </li>

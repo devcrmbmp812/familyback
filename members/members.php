@@ -97,11 +97,18 @@ $rows = $db->get('tbl_users');
                                 <span class="badge">3</span>
                             </a>
                         </li>-->
-                        <li>
-                            <a href="#" class="btn-link">
+                        <li class="dropdown active">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa mr--8 fa-user-o"></i>
                                 <span>My Account</span>
+                                <i class="fa fa-caret-down"></i>
                             </a>
+
+                            <ul class="dropdown-menu">
+                                <li class="active">
+                                    <a href="<?php echo BASE_URL;?>/members/member-profile.php"><span>My Profile</span></a></li>
+                                <li><a href="<?php echo BASE_URL;?>/members/logout.php"><span>Log out</span></a></li>
+                            </ul>
                         </li>
                     </ul>
                     <!-- Header Topbar Links End -->
