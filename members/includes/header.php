@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="<?php echo BASE_URL;?>/members/css/colors/color-1.css" id="changeColorScheme">
 
     <!-- ==== Custom Stylesheet ==== -->
-<!--    <link rel="stylesheet" href="--><?php //echo BASE_URL;?><!--/members/css/custom.css">-->
+    <link rel="stylesheet" href="<?php echo BASE_URL;?>/members/css/custom.css">
 
     <!-- ==== HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries ==== -->
     <!--[if lt IE 9]>
@@ -181,13 +181,13 @@
                             </a>
 
                             <ul class="dropdown-menu">
-                                <li><a href="<?php echo BASE_URL;?>/members/groups-church.html"><span>Church</span></a></li>
-                                <li><a href="<?php echo BASE_URL;?>/members/groups-events.html"><span>Events</span></a></li>
-                                <li><a href="<?php echo BASE_URL;?>/members/groups-homerepair.html"><span>Home Repairs</span></a></li>
-                                <li><a href="<?php echo BASE_URL;?>/members/groups-pets.html"><span>Pets</span></a></li>
+                                <li><a href="<?php echo BASE_URL;?>/members/groups-church.php"><span>Church</span></a></li>
+                                <li><a href="<?php echo BASE_URL;?>/members/groups-events.php"><span>Events</span></a></li>
+                                <li><a href="<?php echo BASE_URL;?>/members/groups-homerepair.php"><span>Home Repairs</span></a></li>
+                                <li><a href="<?php echo BASE_URL;?>/members/groups-pets.php"><span>Pets</span></a></li>
                                 <li><a href="<?php echo BASE_URL;?>/members/groups-recipes.php"><span>Recipes</span></a></li>
-                                <li><a href="<?php echo BASE_URL;?>/members/groups-sports.html"><span>Sports</span></a></li>
-                                <li><a href="<?php echo BASE_URL;?>/members/groups-travel.html"><span>Travel</span></a></li>
+                                <li><a href="<?php echo BASE_URL;?>/members/groups-sports.php"><span>Sports</span></a></li>
+                                <li><a href="<?php echo BASE_URL;?>/members/groups-travel.php"><span>Travel</span></a></li>
 
                             </ul>
                         </li>
