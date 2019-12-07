@@ -7,6 +7,146 @@ $logged_id = $_SESSION['user_id'];
 $db = getDbInstance();
 $db->where('id', $logged_id);
 $row = $db->getOne('tbl_users');
+
+
+if(isset($_POST) && isset($_POST['cover_photo_fg']) && isset($_FILES["cover_photo"]["name"])) {
+    $db = getDbInstance();
+    $data_to_db = array();
+    if(isset($_FILES["cover_photo"]["name"])) {
+        $target_dir = "./uploads/" . $_SESSION['user_id'] . "/covers/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);  //create directory if not exist
+        }
+        $target_file = $target_dir . basename($_FILES["cover_photo"]["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["cover_photo"]["tmp_name"]);
+
+        if ($check !== false) {
+//                echo "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+//                echo "File is not an image.";
+            $uploadOk = 0;
+        }
+        // Check if file already exists
+        if (file_exists($target_file)) {
+//            echo "Sorry, file already exists.";
+            $_SESSION['failure'] = "Sorry, file already exists.";
+            $uploadOk = 0;
+        }
+//        // Check file size
+        if ($_FILES["cover_photo"]["size"] > 500000) {
+//            echo "Sorry, your file is too large.";
+            $_SESSION['failure'] = "Sorry, your file is too large.";
+            $uploadOk = 0;
+        }
+//         Allow certain file formats
+        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+            && $imageFileType != "gif") {
+//            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $_SESSION['failure'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $uploadOk = 0;
+        }
+        // Check if $uploadOk is set to 0 by an failure
+        if ($uploadOk == 0) {
+//            $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+//            echo "Sorry, your file was not uploaded.";
+            $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+            // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["cover_photo"]["tmp_name"], $target_file)) {
+//                echo "The file ". basename( $_FILES["cover_photo"]["name"]). " has been uploaded.";
+                $data_to_db['cover_photo'] = $target_file;
+                $db->where('id', $logged_id);
+                $last_id = $db->update('tbl_users', $data_to_db);
+                $db = getDbInstance();
+                $db->where('id', $logged_id);
+                $row = $db->getOne('tbl_users');
+                if ($last_id) {
+                    $_SESSION['success'] = 'Successfully uploaded';
+                } else {
+                    $_SESSION['failure'] = 'Insert failed!';
+                }
+            } else {
+//                echo "Sorry, there was an failure uploading your file.";
+                $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+
+            }
+        }
+    }
+}
+
+if(isset($_POST) && isset($_POST['avatar_fg']) && isset($_FILES["avatar_photo"]["name"])) {
+    $db = getDbInstance();
+    $data_to_db = array();
+    if(isset($_FILES["avatar_photo"]["name"])) {
+        $target_dir = "./uploads/" . $_SESSION['user_id'] . "/avatars/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);  //create directory if not exist
+        }
+        $target_file = $target_dir . basename($_FILES["avatar_photo"]["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["avatar_photo"]["tmp_name"]);
+
+        if ($check !== false) {
+//                echo "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+//                echo "File is not an image.";
+            $uploadOk = 0;
+        }
+        // Check if file already exists
+        if (file_exists($target_file)) {
+//            echo "Sorry, file already exists.";
+            $_SESSION['failure'] = "Sorry, file already exists.";
+            $uploadOk = 0;
+        }
+//        // Check file size
+        if ($_FILES["avatar_photo"]["size"] > 500000) {
+//            echo "Sorry, your file is too large.";
+            $_SESSION['failure'] = "Sorry, your file is too large.";
+            $uploadOk = 0;
+        }
+//         Allow certain file formats
+        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+            && $imageFileType != "gif") {
+//            echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $_SESSION['failure'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $uploadOk = 0;
+        }
+        // Check if $uploadOk is set to 0 by an failure
+        if ($uploadOk == 0) {
+//            $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+//            echo "Sorry, your file was not uploaded.";
+//            $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+            // if everything is ok, try to upload file
+        } else {
+            if (move_uploaded_file($_FILES["avatar_photo"]["tmp_name"], $target_file)) {
+//                echo "The file ". basename( $_FILES["cover_photo"]["name"]). " has been uploaded.";
+                $data_to_db['avatar'] = $target_file;
+                $db->where('id', $logged_id);
+                $last_id = $db->update('tbl_users', $data_to_db);
+                $db = getDbInstance();
+                $db->where('id', $logged_id);
+                $row = $db->getOne('tbl_users');
+                if ($last_id) {
+                    $_SESSION['success'] = 'Successfully uploaded';
+                } else {
+                    $_SESSION['failure'] = 'Insert failed!';
+                }
+            } else {
+//                echo "Sorry, there was an failure uploading your file.";
+                $_SESSION['failure'] = "Sorry, your file was not uploaded.";
+
+            }
+        }
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -197,19 +337,27 @@ $row = $db->getOne('tbl_users');
         <!-- Header Section End -->
 
         <!-- Cover Header Start -->
-        <div class="cover--header pt--80 text-center" data-bg-img="img/cover-header-img/bg-01.jpg" data-overlay="0.6" data-overlay-color="white">
+        <?php if(isset($row['cover_photo'])) { ?>
+        <div class="cover--header pt--80 text-center" data-bg-img="<?php echo substr($row['cover_photo'],2) ?>" data-overlay="0.6" data-overlay-color="white">
+        <?php } else { ?>
+            <div class="cover--header pt--80 text-center" data-bg-img="img/cover-header-img/bg-01.jpg" data-overlay="0.6" data-overlay-color="white">
+        <?php } ?>
             <div class="container">
-                <?php include BASE_PATH . '/members/forms/profile_cover_modal.php';?>
                 <div id="cover_photo_id_wrapper">
                     <a data-control-name="edit_top_card" id="cover_photo_id" class="pv-top-card-section__edit artdeco-button artdeco-button--tertiary artdeco-button--circle ml1 pv-top-card-v2-section__edit ember-view">    <li-icon type="pencil-icon" role="img" aria-label="Edit Profile"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-supported-dps="24x24" fill="currentColor" focusable="false">
                                 <path d="M21.71 5L19 2.29a1 1 0 00-.71-.29 1 1 0 00-.7.29L4 15.85 2 22l6.15-2L21.71 6.45a1 1 0 00.29-.74 1 1 0 00-.29-.71zM6.87 18.64l-1.5-1.5L15.92 6.57l1.5 1.5zM18.09 7.41l-1.5-1.5 1.67-1.67 1.5 1.5z"></path>
                             </svg></li-icon>
                     </a>
                     <div class="cover--avatar online" data-overlay="0.3" data-overlay-color="primary">
-                        <li-icon aria-hidden="true" type="pencil-icon" class="profile-photo-edit__edit-icon profile-photo-edit__edit-icon--for-top-card-v2" size="small"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" data-supported-dps="16x16" fill="currentColor" focusable="false">
+                        <li-icon id="avatar_edit_btn" aria-hidden="true" type="pencil-icon" class="profile-photo-edit__edit-icon profile-photo-edit__edit-icon--for-top-card-v2" size="small"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" data-supported-dps="16x16" fill="currentColor" focusable="false">
                                 <path d="M14.71 4L12 1.29a1 1 0 00-1.41 0L3 8.85 1 15l6.15-2 7.55-7.55a1 1 0 00.3-.74 1 1 0 00-.29-.71zm-8.84 7.6l-1.5-1.5 5.05-5.03 1.5 1.5zm5.72-5.72l-1.5-1.5 1.17-1.17 1.5 1.5z"></path>
                             </svg></li-icon>
-                        <img src="img/cover-header-img/avatar-01.jpg" alt="">
+                            <?php if(isset($row['avatar'])) { ?>
+                                <img src="<?php echo substr($row['avatar'],2) ?>" alt="">
+                            <?php } else { ?>
+                                <img src="img/cover-header-img/avatar-01.jpg" alt="">
+                            <?php } ?>
+
                     </div>
                 </div>
 
@@ -220,6 +368,7 @@ $row = $db->getOne('tbl_users');
                 <div class="cover--user-activity">
                     <p><i class="fa mr--8 fa-clock-o"></i>Active 1 year 9 monts ago</p>
                 </div>
+                <?php include BASE_PATH . '/includes/flash_messages.php'; ?>
 
                 <!--<div class="cover--user-desc fw--400 fs--18 fstyle--i text-darkest">
                     <p>Hello everyone ! There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour.</p>
@@ -227,7 +376,8 @@ $row = $db->getOne('tbl_users');
             </div>
         </div>
         <!-- Cover Header End -->
-
+        <?php include BASE_PATH . '/members/forms/profile_cover_modal.php';?>
+        <?php include BASE_PATH . '/members/forms/avatar_upload_modal.php';?>
         <!-- Page Wrapper Start -->
         <section class="page--wrapper pt--80 pb--20">
             <div class="container">
@@ -280,7 +430,7 @@ $row = $db->getOne('tbl_users');
 								
 									<!-- Password Item Start -->
 								
-								      <div class="profile--item">
+                                  <div class="profile--item">
                                     <div class="profile--heading">
                                         <h3 class="h4 fw--700">
                                             <span class="mr--4">Create Credentials</span>
@@ -558,263 +708,4 @@ $row = $db->getOne('tbl_users');
         </section>
         <!-- Page Wrapper End -->
 
-         <!-- Footer Section Start -->
-    <footer class="footer--section">
-        <!-- Footer Widgets Start -->
-        <div class="footer--widgets pt--70 pb--20 bg-lightdark" data-bg-img="img/footer-img/footer-widgets-bg.png">
-            <div class="container">
-                <div class="row AdjustRow">
-                    <div class="col-md-3 col-xs-6 col-xxs-12 pb--60">
-                        <!-- Widget Start -->
-                        <div class="widget">
-                            <h2 class="h4 fw--700 widget--title">About Us</h2>
-
-                            <!-- Text Widget Start -->
-                            <div class="text--widget">
-                                <p> MyNotes4U is a collection of notes, pictures and videos capturing a lifetime of your adventures, thoughts and experiences in an album. We make it easy for you to share with family and friends.</p>
-
-                                <p>A place where families can grow closer, save life moments and pass the family legacy on to future generations. Just imagine . . . now your great, great, great
-                                grandchildren can know their grandparent directly from you. </p>
-                            </div>
-                            <!-- Text Widget End -->
-                        </div>
-                        <!-- Widget End -->
-                    </div>
-
-                    <div class="col-md-3 col-xs-6 col-xxs-12 pb--60">
-                        <!-- Widget Start -->
-                        <div class="widget">
-                            <h2 class="h4 fw--700 widget--title">Recent Posts</h2>
-
-                            <!-- Recent Posts Widget Start -->
-                            <div class="recent-posts--widget">
-                                <ul class="nav">
-                                    <li>
-                                        <p class="date fw--300">
-                                            <a href="#"><i class="fa mr--8 fa-file-text-o"></i>Hari-Should be date
-                                                posted</a>
-                                        </p>
-                                        <p class="title fw--700">
-                                            <a href="blog-details.html">Hari this should autopopulate from recent
-                                                additions.</a>
-                                        </p>
-                                    </li>
-                                    <li>
-                                        <p class="date fw--300">
-                                            <a href="#"><i class="fa mr--8 fa-file-text-o"></i>Hari-Should be date
-                                                posted</a>
-                                        </p>
-                                        <p class="title fw--700">
-                                            <a href="blog-details.html">Hari this should autopopulate from recent
-                                                additions.</a>
-                                        </p>
-                                    </li>
-                                    <li>
-                                        <p class="date fw--300">
-                                            <a href="#"><i class="fa mr--8 fa-file-text-o"></i>Hari-Should be date
-                                                posted</a>
-                                        </p>
-                                        <p class="title fw--700">
-                                            <a href="blog-details.html">Hari this should autopopulate from recent
-                                                additions. </a>
-                                        </p>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- Recent Posts Widget End -->
-                        </div>
-                        <!-- Widget End -->
-
-
-                    </div>
-  					<div class="col-md-3 col-xs-6 col-xxs-12 pb--60">
-                            <!-- Widget Start -->
-                            <div class="widget">
-                                <h2 class="h4 fw--700 widget--title">Favorite Groups</h2>
-
-                                <!-- Nav Widget Start -->
-                                <div class="nav--widget">
-                                    <ul class="nav">
-                                        <li>
-                                            <a href="../members/groups-church.html">
-                                                <i class="fa fa-folder-o"></i>
-                                                <span class="text">Church</span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="groups-recipes.php">
-                                                <i class="fa fa-folder-o"></i>
-                                                <span class="text">Recipes</span>
-                                                
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="../members/groups-homerepair.html">
-                                                <i class="fa fa-folder-o"></i>
-                                                <span class="text">Home Repair / Remodeling</span>
-                                                
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="../members/groups-sports.html">
-                                                <i class="fa fa-folder-o"></i>
-                                                <span class="text">Sports</span>
-                                                
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="../members/groups-pets.html">
-                                                <i class="fa fa-folder-o"></i>
-                                                <span class="text">Pets</span>  
-                                            </a>
-                                        </li>
-										<li>
-                                            <a href="../members/groups-travel.html">
-                                                <i class="fa fa-folder-o"></i>
-                                                <span class="text">Travel</span>
-                                                
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <!-- Nav Widget End -->
-                            </div>
-                            <!-- Widget End -->
-                  
-
-                    </div>
-
-                    <div class="col-md-3 col-xs-6 col-xxs-12 pb--60">
-
-                        <!-- Widget Start -->
-                        <div class="widget">
-                            <h2 class="h4 fw--700 widget--title">Useful Links</h2>
-
-                             <!-- Links Widget Start -->
-                                <div class="links--widget">
-                                    <ul class="nav">
-                                        <li><a href="#">My Account</a></li>
-                                        <li><a href="#">Join a Group</a></li>
-										
-<li><a href="../members/contact.html">Contact</a></li>
-                                    </ul>
-                                </div>
-                                <!-- Links Widget End -->
-                        </div>
-                        <!-- Widget End -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Widgets End -->
-        </div>
-        <!-- Footer Extra Start -->
-        <div class="footer--extra bg-darker pt--30 pb--40 text-center">
-            <div class="container">
-                <!-- Widget Start -->
-                <div class="widget">
-                    <h2 class="h4 fw--700 widget--title">Recent Active Members-Hari this section should autopopulate
-                    </h2>
-
-                    <!-- Recent Active Members Widget Start -->
-                    <div class="recent-active-members--widget style--2">
-                        <div class="owl-carousel" data-owl-items="12" data-owl-nav="true" data-owl-speed="1200"
-                            data-owl-responsive='{"0": {"items": "3"}, "481": {"items": "6"}, "768": {"items": "8"}, "992": {"items": "12"}}'>
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
-                            </div>
-
-                            <div class="img">
-                                <a href="member-activity-personal.php"><img
-                                        src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Recent Active Members Widget End -->
-                </div>
-                <!-- Widget End -->
-            </div>
-        </div>
-        <!-- Footer Extra End -->
-
-        <!-- Footer Copyright Start -->
-        <div class="footer--copyright pt--30 pb--30 bg-darkest">
-            <div class="container">
-                <div class="text fw--500 fs--14 text-center">
-                    <p>Copyright &copy; My<span>Notes</span>4U. All Rights Reserved.</p>
-                </div>
-            </div>
-        </div>
-        <!-- Footer Copyright End -->
-    </footer>
-    <!-- Footer Section End -->
-
-
-    <!-- Back To Top Button End -->
-
-    <!-- ==== Plugins Bundle ==== -->
-    <script src="js/plugins.min.js"></script>
-
-    <!-- ==== Main Script ==== -->
-    <script src="js/main.js"></script>
-    <script src="js/custom.js"></script>
-
-</body>
-
-</html>
+<?php include BASE_PATH.'/members/includes/footer.php'?>

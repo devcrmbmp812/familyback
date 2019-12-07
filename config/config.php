@@ -8,7 +8,7 @@ define('BASE_PATH', dirname(dirname(__FILE__)));
 define('APP_FOLDER', 'simpleadmin');
 define('CURRENT_PAGE', basename($_SERVER['REQUEST_URI']));
 
-define('BASE_URL', 'http://dev.myfamilybackccc.com:8081');
+define('BASE_URL', 'http://dev.familyback127.com');
 define('DB_HOST', "localhost");
 define('DB_USER', "root");
 define('DB_PASSWORD', "");

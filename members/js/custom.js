@@ -12,6 +12,18 @@
         }
     }
 
+    function readAvatarURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#avatar_preview').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     $('.activity-note-add').click(function (e) {
 
         $('#myLargeModalLabel').html('Add New Note');
@@ -238,6 +250,7 @@
             $('#update_note_form').submit();
         }
     });
+
     /*Cover photo and Profile photo edit Start*/
     $('#cover_photo_id').click(function(e){
         e.preventDefault();
@@ -245,4 +258,18 @@
         console.log("here is cover photo edit");
         $('.profile-cover-modal').modal('toggle');
     });
+
+    $('#avatar_edit_btn').click(function(e){
+        e.preventDefault();
+
+        console.log("here is avatar edit");
+        $('.avatar-upload-modal').modal('toggle');
+    });
+
+    $("#avatarToUpload").change(function() {
+        readAvatarURL(this);
+    });
+
+
+
 })(jQuery);

@@ -1,3 +1,7 @@
+<?php
+    $db = getDbInstance();
+    $rows = $db->get('tbl_users');
+?>
 <!-- Footer Section Start -->
 <footer class="footer--section">
     <!-- Footer Widgets Start -->
@@ -151,57 +155,18 @@
                 <!-- Recent Active Members Widget Start -->
                 <div class="recent-active-members--widget style--2">
                     <div class="owl-carousel" data-owl-items="12" data-owl-nav="true" data-owl-speed="1200" data-owl-responsive='{"0": {"items": "3"}, "481": {"items": "6"}, "768": {"items": "8"}, "992": {"items": "12"}}'>
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/01.jpg" alt=""></a>
-                        </div>
+                        <?php foreach ($rows as $row):?>
+                            <div class="img">
+                                    <a href="member-activity-personal.php?user=<?php echo $row['id'] ?>">
+                                        <?php if(isset($row['avatar'])) { ?>
+                                            <img src="<?php echo substr($row['avatar'], 2) ?>" alt="" style="width: 30px; height: 30px;">
+                                        <?php } else { ?>
+                                            <img src="img/widgets-img/recent-active-members/01.jpg" alt="">
+                                        <?php } ?>
+                                    </a>
+                            </div>
+                        <?php endforeach;?>
 
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/02.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/03.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/04.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/05.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/06.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/07.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/08.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/09.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/10.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/11.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/12.jpg" alt=""></a>
-                        </div>
-
-                        <div class="img">
-                            <a href="member-activity-personal.php"><img src="img/widgets-img/recent-active-members/13.jpg" alt=""></a>
-                        </div>
                     </div>
                 </div>
                 <!-- Recent Active Members Widget End -->
@@ -236,6 +201,6 @@
 
 <!-- ==== Main Script ==== -->
 <script src="<?php echo BASE_URL;?>/members/js/main.js"></script>
-
+<script src="<?php echo BASE_URL;?>/members/js/custom.js"></script>
 </body>
 </html>

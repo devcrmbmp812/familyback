@@ -56,6 +56,8 @@ if(isset($_POST) && isset($_POST['cat_id']) && $_POST['cat_id'] && $_POST['mode'
 //                echo "File is not an image.";
             $uploadOk = 0;
         }
+        echo $_FILES["note_photo"]["tmp_name"];
+        exit;
         // Check if file already exists
         if (file_exists($target_file)) {
 //            echo "Sorry, file already exists.";
