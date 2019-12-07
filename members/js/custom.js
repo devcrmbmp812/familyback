@@ -238,4 +238,11 @@
             $('#update_note_form').submit();
         }
     });
+    /*Cover photo and Profile photo edit Start*/
+    $('#cover_photo_id').click(function(e){
+        e.preventDefault();
+
+        console.log("here is cover photo edit");
+        $('.profile-cover-modal').modal('toggle');
+    });
 })(jQuery);

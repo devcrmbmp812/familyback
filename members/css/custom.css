@@ -10,3 +10,60 @@ Author URI  : https://themeforest.net/user/themelooks
 You can write your custom css styles in this file...
 
 */
+#cover_photo_id {
+    cursor: pointer;
+}
+
+.pv-profile-wrapper a:visited {
+    color: #0073b1;
+}
+
+.artdeco-button--tertiary, .artdeco-button--tertiary:visited, .artdeco-button--tertiary:visited:hover, a.artdeco-button--tertiary {
+    background-color: transparent;
+    color: #0073b1;
+}
+
+.artdeco-button--circle.artdeco-button, .artdeco-button--circle.artdeco-button--2 {
+    height: 4rem;
+    width: 4rem;
+
+
+    position: absolute;
+    top: 25px;
+    right: 20px;
+}
+
+a.artdeco-button, a.artdeco-button:active, a.artdeco-button:focus, a.artdeco-button:hover, a.artdeco-button:visited {
+    text-decoration: none;
+}
+
+li-icon[type$=-icon] {
+    width: 24px;
+    height: 24px;
+}
+
+li-icon {
+    display: inline-block;
+    width: 300px;
+    height: 150px;
+    overflow: hidden;
+    position: relative;
+}
+
+.pv-profile-wrapper a:visited {
+    color: #0073b1;
+}
+
+.profile-photo-edit__edit-icon.profile-photo-edit__edit-icon.profile-photo-edit__edit-icon {
+    position: absolute;
+    height: 32px;
+    width: 32px;
+    border-radius: 32px;
+    bottom: 0px;
+    right: -8px;
+    background-color: #fff;
+    box-shadow: 0 2px 3px rgba(0,0,0,.2);
+    color: #0073b1;
+    padding: 8px 0 0 8px;
+    cursor: pointer;
+}

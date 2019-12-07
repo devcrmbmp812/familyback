@@ -199,8 +199,18 @@ $row = $db->getOne('tbl_users');
         <!-- Cover Header Start -->
         <div class="cover--header pt--80 text-center" data-bg-img="img/cover-header-img/bg-01.jpg" data-overlay="0.6" data-overlay-color="white">
             <div class="container">
-                <div class="cover--avatar online" data-overlay="0.3" data-overlay-color="primary">
-                    <img src="img/cover-header-img/avatar-01.jpg" alt="">
+                <?php include BASE_PATH . '/members/forms/profile_cover_modal.php';?>
+                <div id="cover_photo_id_wrapper">
+                    <a data-control-name="edit_top_card" id="cover_photo_id" class="pv-top-card-section__edit artdeco-button artdeco-button--tertiary artdeco-button--circle ml1 pv-top-card-v2-section__edit ember-view">    <li-icon type="pencil-icon" role="img" aria-label="Edit Profile"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" data-supported-dps="24x24" fill="currentColor" focusable="false">
+                                <path d="M21.71 5L19 2.29a1 1 0 00-.71-.29 1 1 0 00-.7.29L4 15.85 2 22l6.15-2L21.71 6.45a1 1 0 00.29-.74 1 1 0 00-.29-.71zM6.87 18.64l-1.5-1.5L15.92 6.57l1.5 1.5zM18.09 7.41l-1.5-1.5 1.67-1.67 1.5 1.5z"></path>
+                            </svg></li-icon>
+                    </a>
+                    <div class="cover--avatar online" data-overlay="0.3" data-overlay-color="primary">
+                        <li-icon aria-hidden="true" type="pencil-icon" class="profile-photo-edit__edit-icon profile-photo-edit__edit-icon--for-top-card-v2" size="small"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" data-supported-dps="16x16" fill="currentColor" focusable="false">
+                                <path d="M14.71 4L12 1.29a1 1 0 00-1.41 0L3 8.85 1 15l6.15-2 7.55-7.55a1 1 0 00.3-.74 1 1 0 00-.29-.71zm-8.84 7.6l-1.5-1.5 5.05-5.03 1.5 1.5zm5.72-5.72l-1.5-1.5 1.17-1.17 1.5 1.5z"></path>
+                            </svg></li-icon>
+                        <img src="img/cover-header-img/avatar-01.jpg" alt="">
+                    </div>
                 </div>
 
                 <div class="cover--user-name">
@@ -803,6 +813,7 @@ $row = $db->getOne('tbl_users');
 
     <!-- ==== Main Script ==== -->
     <script src="js/main.js"></script>
+    <script src="js/custom.js"></script>
 
 </body>
 
