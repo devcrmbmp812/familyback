@@ -3,9 +3,16 @@ session_start();
 require_once '../config/config.php';
 require_once BASE_PATH.'/includes/auth_validate.php';
 $db = getDbInstance();
-$db->join('tbl_recipes', 'tbl_users.id = tbl_recipes.rec_submit_by');
-$rows = $db->get('tbl_users');
+$query = 'SELECT tbl_users.`first_name`, tbl_users.`last_name`, tmp.*
+FROM (SELECT *, COUNT(rec_submit_by) cnt FROM tbl_recipes
+GROUP BY rec_submit_by) tmp
+LEFT JOIN tbl_users
+ON tmp.`rec_submit_by` = tbl_users.`id`';
+$rows = $db->rawQuery($query);
+//$db->join('tbl_recipes', 'tbl_users.id = tbl_recipes.rec_submit_by');
+//$rows = $db->get('tbl_users');
 ?>
+
 
 
 <?php include BASE_PATH.'/members/includes/header.php'?>
@@ -101,7 +108,7 @@ $rows = $db->get('tbl_users');
                                 <div class="col-md-4 col-xs-6 col-xxs-12">
                                     <!-- Box Item Start -->
                                     <div class="box--item text-center">
-                                        <a href="groups-recipes-large.php?recipe=<?php echo $row['id'];?>" class="img" data-overlay="0.1">
+                                        <a href="groups-recipes-large.php?userid=<?php echo $row['rec_submit_by'];?>" class="img" data-overlay="0.1">
                                             <img src="<?php echo $row['rec_photo']; ?>" width="800px;" height="419px;" alt="">
                                         </a>
 

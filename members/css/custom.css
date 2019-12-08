@@ -67,3 +67,71 @@ li-icon {
     padding: 8px 0 0 8px;
     cursor: pointer;
 }
+
+
+/*Slide show*/
+
+/* Slideshow container */
+.myslideshow-container {
+    position: relative !important;
+    margin: auto;
+}
+
+/* Next & previous buttons */
+.myprev, .mynext {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -22px;
+    color: #999;
+    font-weight: bold;
+    font-size: 36px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+}
+
+/* Position the "next button" to the right */
+.mynext {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.myprev {
+    left: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.myprev:hover, .mynext:hover {
+    background-color: rgba(0,0,0,0.8);
+}
+
+.myactive, .mydot:hover {
+    background-color: #717171;
+}
+
+/* Fading animation */
+.myslidefade {
+    -webkit-animation-name: fade;
+    -webkit-animation-duration: 1.5s;
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+@-webkit-keyframes myslidefade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+@keyframes myslidefade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+    .myprev, .mynext {font-size: 11px}
+}
