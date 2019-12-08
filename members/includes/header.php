@@ -193,7 +193,7 @@
                         </li>
 
                         </li>
-                        <li><a href="<?php echo BASE_URL;?>/members/contact.html"><span>Contact</span></a></li>
+                        <li><a href="<?php echo BASE_URL;?>/members/contact.php"><span>Contact</span></a></li>
                     </ul>
                     <!-- Header Nav Links End -->
                 </div>

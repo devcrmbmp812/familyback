@@ -74,7 +74,7 @@
                         <div class="nav--widget">
                             <ul class="nav">
                                 <li>
-                                    <a href="<?php echo BASE_URL;?>/members/groups-church.html">
+                                    <a href="<?php echo BASE_URL;?>/members/groups-church.php">
                                         <i class="fa fa-folder-o"></i>
                                         <span class="text">Church</span>
                                     </a>
@@ -87,27 +87,27 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo BASE_URL;?>/members/groups-homerepair.html">
+                                    <a href="<?php echo BASE_URL;?>/members/groups-homerepair.php">
                                         <i class="fa fa-folder-o"></i>
                                         <span class="text">Home Repair / Remodeling</span>
 
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo BASE_URL;?>/members/groups-sports.html">
+                                    <a href="<?php echo BASE_URL;?>/members/groups-sports.php">
                                         <i class="fa fa-folder-o"></i>
                                         <span class="text">Sports</span>
 
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo BASE_URL;?>/members/groups-pets.html">
+                                    <a href="<?php echo BASE_URL;?>/members/groups-pets.php">
                                         <i class="fa fa-folder-o"></i>
                                         <span class="text">Pets</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo BASE_URL;?>/members/groups-travel.html">
+                                    <a href="<?php echo BASE_URL;?>/members/groups-travel.php">
                                         <i class="fa fa-folder-o"></i>
                                         <span class="text">Travel</span>
 
@@ -132,7 +132,7 @@
                             <ul class="nav">
                                 <li><a href="#">My Account</a></li>
                                 <li><a href="#">Join a Group</a></li>
-                                <li><a href="<?php echo BASE_URL;?>/members/contact.html">Contact</a></li>
+                                <li><a href="<?php echo BASE_URL;?>/members/contact.php">Contact</a></li>
                             </ul>
                         </div>
                         <!-- Links Widget End -->

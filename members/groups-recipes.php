@@ -3,14 +3,46 @@ session_start();
 require_once '../config/config.php';
 require_once BASE_PATH.'/includes/auth_validate.php';
 $db = getDbInstance();
-$query = 'SELECT tbl_users.`first_name`, tbl_users.`last_name`, tmp.*
-FROM (SELECT *, COUNT(rec_submit_by) cnt FROM tbl_recipes
-GROUP BY rec_submit_by) tmp
-LEFT JOIN tbl_users
-ON tmp.`rec_submit_by` = tbl_users.`id`';
-$rows = $db->rawQuery($query);
-//$db->join('tbl_recipes', 'tbl_users.id = tbl_recipes.rec_submit_by');
-//$rows = $db->get('tbl_users');
+$db->join('tbl_recipes', 'tbl_users.id = tbl_recipes.rec_submit_by');
+$db->orderBy('rec_date');
+$rows = $db->get('tbl_users');
+
+//$query = 'SELECT tbl_users.`first_name`, tbl_users.`last_name`, tmp.*
+//FROM (SELECT *, COUNT(rec_submit_by) cnt FROM tbl_recipes
+//GROUP BY rec_submit_by) tmp
+//LEFT JOIN tbl_users
+//ON tmp.`rec_submit_by` = tbl_users.`id`';
+//$rows = $db->rawQuery($query);
+
+if(isset($_GET) && (isset($_GET['recipefilter']) || isset($_GET['letter']))) {
+    if(isset($_GET['recipefilter'])){
+        $filter_val = $_GET['recipefilter'];
+        if($filter_val == 'last-active') {
+            $db = getDbInstance();
+            $db->join('tbl_recipes', 'tbl_users.id = tbl_recipes.rec_submit_by');
+            $db->orderBy('rec_date');
+            $rows = $db->get('tbl_users');
+        }
+        else {
+            $db = getDbInstance();
+            $db->join('tbl_recipes', 'tbl_users.id = tbl_recipes.rec_submit_by');
+            $db->where('rec_type', '%'.$filter_val.'%', 'LIKE');
+            $db->orderBy('rec_date');
+            $rows = $db->get('tbl_users');
+        }
+    }
+
+    if(isset($_GET['letter'])) {
+        $search_param = $_GET['letter'];
+        $db = getDbInstance();
+        $db->join('tbl_recipes', 'tbl_users.id = tbl_recipes.rec_submit_by');
+        $db->where('rec_title', $search_param.'%', 'LIKE');
+        $db->orderBy('rec_date');
+        $rows = $db->get('tbl_users');
+    }
+}
+
+
 ?>
 
 
@@ -47,26 +79,36 @@ $rows = $db->rawQuery($query);
                         <div class="filter--options float--right">
                             <label>
                                 <span class="h4 ""fs--14 ff--primary fw--500 text-darker">Find a Recipe :</span>
+                                <form action="" method="GET">
 
-                                <select name="membersfilter" class="form-control form-sm" data-trigger="selectmenu">
-                                  <option value="last-active" selected>Most Current Added</option>
-                                    <option value="most-members">Breakfast</option>
-                                    <option value="newly-created">Lunch</option>
-                                    <option value="alphabetical">Dinner</option>
-                                    <option value="alphabetical">Desserts</option>
-                                    <option value="alphabetical">Family Favorite</option>
-                                    <option value="alphabetical">Gluten Free</option>
-                                    <option value="alphabetical">Vegetarian</option>
+                                    <select name="recipefilter" id="recipefilter" class="input-medium" onchange="this.form.submit();">
+                                        <option value="last-active" selected>Most Current Added</option>
+                                        <option value="Breakfast" <?php if(isset($_GET['recipefilter']) && $_GET['recipefilter'] == 'Breakfast') echo 'selected'; ?> >Breakfast</option>
+                                        <option value="Lunch" <?php if(isset($_GET['recipefilter']) && $_GET['recipefilter'] == 'Lunch') echo 'selected'; ?> >Lunch</option>
+                                        <option value="Dinner" <?php if(isset($_GET['recipefilter']) && $_GET['recipefilter'] == 'Dinner') echo 'selected'; ?> >Dinner</option>
+                                        <option value="Dessert" <?php if(isset($_GET['recipefilter']) && $_GET['recipefilter'] == 'Dessert') echo 'selected'; ?> >Dessert</option>
+                                        <option value="Family Favorite" <?php if(isset($_GET['recipefilter']) && $_GET['recipefilter'] == 'Family Favorite') echo 'selected'; ?> >Family Favorite</option>
+                                        <option value="Gluten Free" <?php if(isset($_GET['recipefilter']) && $_GET['recipefilter'] == 'Gluten Free') echo 'selected'; ?> >Gluten Free</option>
+                                        <option value="Vegetarian" <?php if(isset($_GET['recipefilter']) && $_GET['recipefilter'] == 'Vegetarian') echo 'selected'; ?> >Vegetarian</option>
+                                    </select>
 
-                                </select>
+                                </form>
                             </label>
 
-                    <div>
-                    A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
+                            <div>
+                                <form action="" method="post" name="search" onclick="submit">
+                                <?php
+
+                                foreach (range('A', 'Z') as $char) {
+                                    echo '<a href='.BASE_URL.'/members/groups-recipes.php?letter='.$char.'> '.$char.'</a> |';
+                                }
+                                ?>
+                                </form>
                             </div> Hari - a user can select to sort by recipe type, or the title alphabetically
                         </div>
                     </div>
                     <!-- Filter Nav End -->
+
 
                     <!-- Box Items Start -->
                     <div class="box--items-h">
