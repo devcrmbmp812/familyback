@@ -115,7 +115,7 @@
 
                     <!-- Header Navbar Logo Start -->
                     <div class="header--navbar-logo navbar-brand">
-                        <a href="<?php echo BASE_URL;?>/index.php">
+                        <a href="<?php echo BASE_URL;?>/index.html">
                             <img src="<?php echo BASE_URL;?>/img/blacklogosm.png" class="normal" alt="">
                             <img src="<?php echo BASE_URL;?>/img/whitelogosm.png" class="sticky" alt="">
                         </a>
